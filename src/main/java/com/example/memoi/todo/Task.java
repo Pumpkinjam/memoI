@@ -1,11 +1,12 @@
 package com.example.memoi.todo;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class Task {
+public abstract class Task implements Serializable {
 
     // primary key for the Instance
     public String created;  // instanceNum NOT NULL, not displayed for user

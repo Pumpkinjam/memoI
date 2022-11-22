@@ -1,3 +1,4 @@
+/*
 package com.example.memoi.todo;
 
 import java.time.LocalDate;
@@ -100,11 +101,13 @@ public class TaskBuilder {
         return new Task(this.title, this.description, this.date, this.time);
     }
 
-    /* format of
+    */
+/* format of
      * "{title}, {description}, {time}, {date}, {location}\n"
      * "___", "___", "yyyy-MM-dd", "HH-mm", ???
      * all values has "null" if null
-     */
+     *//*
+
     public static TaskBuilder of(String csv) {
         StringTokenizer st = new StringTokenizer(csv, ", ");
         //System.out.println(st.countTokens());
@@ -129,4 +132,4 @@ public class TaskBuilder {
             return new TaskBuilder("Error", "Occured.", LocalDate.now(), LocalTime.now());
         }
     }
-}
+}*/

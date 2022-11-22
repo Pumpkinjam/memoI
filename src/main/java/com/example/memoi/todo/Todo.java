@@ -22,7 +22,6 @@ public class Todo extends Task {
     // TODO: find appropriate class for location
     Object location;
 
-
     Todo(String title, String description, LocalDate date, LocalTime time, Object location) {
         /*
         if (title == null) throw new NullIntegrityException();
@@ -42,7 +41,6 @@ public class Todo extends Task {
     /* formatting to
      * "{title}, {description}, {time}, {date}, {location}\n"
      */
-    // TODO: in csv, we can't save character ","...
     @Override
     public String toCsvFormat() {
         String res = "";

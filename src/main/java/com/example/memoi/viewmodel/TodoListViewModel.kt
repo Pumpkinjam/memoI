@@ -11,48 +11,37 @@ import kotlin.reflect.typeOf
 class TodoListViewModel: ViewModel() {
     private val repository = TodoRepository()
 
-    private val _csvList = ArrayList<MutableLiveData<String>>()
-    val csvList : ArrayList<MutableLiveData<String>> get() = _csvList
+    private val _todoList = ArrayList<MutableLiveData<Todo>>()
+    val todoList : ArrayList<MutableLiveData<Todo>> get() = _todoList
 
 
-/*  overloaded&merged by fun add(Task)
     fun add(todo: Todo) {
-        val newCsv = todo.toCsvFormat()
-
-        this._csvList.add(MutableLiveData<String>(newCsv))
-        repository.postCsv(todo.created, newCsv)
-        repository.observeCsv(todo.created, this._csvList.last())
-    }
-*/
-    fun add(task: Task) {
-        //val newCsv = if (task is Todo) (task as Todo).toCsvFormat() else task.toCsvFormat()
-        val newCsv = task.toCsvFormat()
-
-        this._csvList.add(MutableLiveData<String>(newCsv))
-        repository.postCsv(task.created, newCsv)
-        repository.observeCsv(task.created, this._csvList.last())
+        this._todoList.add(MutableLiveData<Todo>(todo))
+        repository.postTodo(todo.created, todo)
+        repository.observeTodo(todo.created, this._todoList.last())
     }
 
-    fun getTodoList(): ArrayList<Todo> {
+    fun getList(): ArrayList<Todo> {
         val resList = ArrayList<Todo>()
-        for (data in _csvList) {
-            val str = data.value!!
 
-            // don't get past-Task
-            val tmp = TodoBuilder.of(str).build() as Todo
-            if (tmp.date==null || !tmp.date.isBefore(LocalDate.now())) {
-                resList.add(tmp)
+        for (data in _todoList) {
+            if (data.value != null) {
+                val tmp = data.value!!
+
+                // don't get past-Task
+                if (tmp.date==null || !tmp.date.isBefore(LocalDate.now()))
+                    resList.add(tmp)
             }
+            else continue
         }
 
         return resList
     }
 
-    fun getTaskList(): ArrayList<Task> {
+    fun getAllList(): ArrayList<Task> {
         val resList = ArrayList<Task>()
-        for (data in _csvList) {
-            val str = data.value!!
-            resList.add(TaskBuilder.of(str).build())
+        for (data in _todoList) {
+            if (data.value != null) resList.add(data.value!!)
         }
 
         return resList

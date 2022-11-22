@@ -30,7 +30,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMainBinding.inflate(inflater, container, false);
-        todoList = vm.getTodoList()
+        todoList = vm.getList()
 
         childFragmentManager.beginTransaction().run {
             replace(binding.frmTodoList.id, TodoListFragment())
@@ -40,7 +40,7 @@ class MainFragment : Fragment() {
         binding.btnAddNew.setOnClickListener {
             // todo : save all lists
             parentActivity.goToFragment(AddNewFragment())
-            println(vm.getTodoList())
+            println(vm.getList())
         }
 
         return binding.root

@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.MemoI.TodoAdapter
+import com.example.memoi.TodoAdapter
 import com.example.memoi.databinding.FragmentTodoListBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
@@ -34,7 +34,7 @@ class TodoListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoListBinding.inflate(inflater, container, false)
-        todoList = vm.getTodoList()
+        todoList = vm.getList()
 
         binding.recTodo.layoutManager = LinearLayoutManager(parentActivity)
         // or... binding.recTodo.layoutManager = LinearLayoutManager(activity)

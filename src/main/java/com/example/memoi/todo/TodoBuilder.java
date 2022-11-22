@@ -4,50 +4,60 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.time.*;
 
-public class TodoBuilder extends TaskBuilder {
+public class TodoBuilder{
+
+    String title;
+    String description;
+    LocalDate date;
+    LocalTime time;
+    LocalDateTime timing;
     Object location;
 
-    public final class NullIntegrityException extends RuntimeException {
+    public final static class NullIntegrityException extends RuntimeException {
         NullIntegrityException() {
             super("title cannot be null");
         }
     }
 
     public TodoBuilder() {
-        super();
-        location = null;
+        this.title = null;
+        this.description = null;
+        this.date = null;
+        this.time = null;
+        this.timing = null;
+        this.location = null;
     }
+
     // lots of... constructors... for null proccessing
     public TodoBuilder(String title) {
-        super(title);
-        this.location = null;
+        this(title, null, null, null, null);
     }
 
     public TodoBuilder(String title, String description) {
-        super(title, description);
-        this.location = null;
+        this(title, description, null, null, null);
     }
 
     public TodoBuilder(String title, String description, LocalDate date) {
-        super(title, description, date);
-        this.location = null;
+        this(title, description, date, null, null);
     }
 
     public TodoBuilder(String title, String description, LocalTime time) {
-        super(title, description, time);
-        this.location = null;
+        this(title, description, null, time, null);
     }
 
     public TodoBuilder(String title, String description, LocalDate date, LocalTime time) {
-        super(title, description, date, time);
-        this.location = null;
+        this(title, description, date, time, null);
     }
 
     public TodoBuilder(String title, String description, LocalDate date, LocalTime time, Object location) {
-        super(title, description, date, time);
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.time = time;
+        this.timing = (date == null || time == null) ? null : LocalDateTime.of(date, time);
         this.location = location;
     }
-/*
+
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }
     public void setTiming(LocalDateTime timing) {
@@ -89,10 +99,9 @@ public class TodoBuilder extends TaskBuilder {
             this.timing = LocalDateTime.of(this.date, time);
         }
     }
-*/
-    @Override
-    // return type : Todo_
-    public Task build() throws Exception {
+
+
+    public Todo build() throws Exception {
         if (this.title == null) {
             throw new NullIntegrityException();
         }
@@ -126,6 +135,7 @@ public class TodoBuilder extends TaskBuilder {
         }
         catch (IndexOutOfBoundsException e) {
             System.err.println("TodoBuilder.of() failed. returning Error Todo");
+            e.printStackTrace();
             return new TodoBuilder("Error", "Occured.", LocalDate.now(), LocalTime.now());
         }
     }
