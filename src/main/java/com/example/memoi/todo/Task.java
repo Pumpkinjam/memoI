@@ -31,7 +31,7 @@ public class Task {
         if (title == null) throw new Task.NullIntegrityException();
 
         // firebase database paths must not contain '.'
-        this.created = LocalDateTime.now().toString().replace('.', '_');
+        this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
         this.title = title;
         this.description = description;
         this.date = date;
