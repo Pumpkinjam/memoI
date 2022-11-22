@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.memoi.databinding.AddNewFragmentBinding
 import com.example.memoi.databinding.ListSetTodoPropertiesBinding
+import com.example.memoi.todo.Task
 import com.example.memoi.todo.TodoBuilder
 import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -65,7 +66,7 @@ class AddNewFragment : Fragment() {
                 vm.add(tempTodo.build())
                 parentActivity.exitFragment()
             }
-            catch (e: TodoBuilder.NullIntegrityException) {
+            catch (e: Task.NullIntegrityException) {
                 println("?")
                 Snackbar.make(this.requireView(),
                     "타이틀을 지정하지 않았습니다.", Snackbar.LENGTH_SHORT)

@@ -29,7 +29,7 @@ class TodoListViewModel: ViewModel() {
                 val tmp = data.value!!
 
                 // don't get past-Task
-                if (tmp.date==null || !tmp.date.isBefore(LocalDate.now()))
+                if (tmp.date==null || !(LocalDate.parse(tmp.date)).isBefore(LocalDate.now()))
                     resList.add(tmp)
             }
             else continue

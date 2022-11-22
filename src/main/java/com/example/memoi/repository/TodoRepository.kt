@@ -5,14 +5,11 @@ import com.example.memoi.todo.Todo
 import com.example.memoi.todo.TodoBuilder
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.*
+import java.lang.reflect.InvocationTargetException
 import kotlin.collections.HashMap
 
 class TodoRepository {
@@ -44,7 +41,17 @@ class TodoRepository {
     fun postTodo(key: String, newTodo: Todo) {
         val todoRef = database.getReference("list/$key")
         //val csvRef = database.getReference("list/$key")
-        todoRef.setValue(newTodo)
+        try {
+            todoRef.setValue(newTodo)
+        }
+        catch (e: InvocationTargetException) {
+            e.targetException.printStackTrace()
+            return;
+        }
+        catch (e1: DatabaseException) {
+            e1.printStackTrace()
+            return;
+        }
     }
 
     fun removeTodo(key: String) {

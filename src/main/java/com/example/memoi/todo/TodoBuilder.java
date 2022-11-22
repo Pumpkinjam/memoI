@@ -8,102 +8,83 @@ public class TodoBuilder{
 
     String title;
     String description;
-    LocalDate date;
-    LocalTime time;
-    LocalDateTime timing;
-    Object location;
-
-    public final static class NullIntegrityException extends RuntimeException {
-        NullIntegrityException() {
-            super("title cannot be null");
-        }
-    }
+    String date;
+    String time;
+    String location;
 
     public TodoBuilder() {
         this.title = null;
         this.description = null;
         this.date = null;
         this.time = null;
-        this.timing = null;
         this.location = null;
     }
 
     // lots of... constructors... for null proccessing
     public TodoBuilder(String title) {
-        this(title, null, null, null, null);
+        this(title, null, (String)null, null, null);
     }
 
     public TodoBuilder(String title, String description) {
-        this(title, description, null, null, null);
-    }
-
-    public TodoBuilder(String title, String description, LocalDate date) {
-        this(title, description, date, null, null);
-    }
-
-    public TodoBuilder(String title, String description, LocalTime time) {
-        this(title, description, null, time, null);
+        this(title, description, (String)null, null, null);
     }
 
     public TodoBuilder(String title, String description, LocalDate date, LocalTime time) {
         this(title, description, date, time, null);
     }
 
-    public TodoBuilder(String title, String description, LocalDate date, LocalTime time, Object location) {
+    public TodoBuilder(String title, String description, LocalDate date, LocalTime time, String location) {
+        this.title = title;
+        this.description = description;
+        this.date = date.toString();
+        this.time = time.toString();
+        this.location = location;
+    }
+
+    public TodoBuilder(String title, String description, String date, String time, String location) {
+        if (date != null) LocalDate.parse(date);
+        if (time != null) LocalTime.parse(time);
+
         this.title = title;
         this.description = description;
         this.date = date;
         this.time = time;
-        this.timing = (date == null || time == null) ? null : LocalDateTime.of(date, time);
         this.location = location;
     }
 
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }
-    public void setTiming(LocalDateTime timing) {
-        this.timing = timing;
-    }
 
     public void setDate(LocalDate date) {
+        this.date = date.toString();
+    }
+
+    public void setDate(String date) {
+        LocalDate.parse(date);  // parsable checking
         this.date = date;
-        if (this.time != null) {
-            this.timing = LocalDateTime.of(date, this.time);
-        }
     }
 
     public void setDate(int y, int m, int d) {
         this.setDate(LocalDate.of(y, m, d));
     }
 
-    public void setDate(String s) {
-        this.date = LocalDate.parse(s);
-        if (this.time != null) {
-            this.timing = LocalDateTime.of(date, this.time);
-        }
+    public void setTime(LocalTime time) {
+        this.time = time.toString();
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(String time) {
+        LocalTime.parse(time);
         this.time = time;
-        if (this.date != null) {
-            this.timing = LocalDateTime.of(this.date, time);
-        }
     }
 
     public void setTime(int h, int m) {
         this.setTime(LocalTime.of(h, m));
     }
 
-    public void setTime(String s) {
-        this.time = LocalTime.parse(s);
-        if (this.date != null) {
-            this.timing = LocalDateTime.of(this.date, time);
-        }
-    }
-
 
     public Todo build() throws Exception {
         if (this.title == null) {
-            throw new NullIntegrityException();
+            throw new Task.NullIntegrityException();
         }
         return new Todo(this.title, this.description, this.date, this.time, this.location);
     }
