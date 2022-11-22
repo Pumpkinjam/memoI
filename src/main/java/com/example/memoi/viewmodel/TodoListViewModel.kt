@@ -14,11 +14,7 @@ class TodoListViewModel: ViewModel() {
     private val _csvList = ArrayList<MutableLiveData<String>>()
     val csvList : ArrayList<MutableLiveData<String>> get() = _csvList
 
-/*
-    private val _doSave = MutableLiveData<Boolean>(false)
-    val doSave: MutableLiveData<Boolean> get() = _doSave
-*/
-/*
+/*  overloaded&merged by fun add(Task)
     fun add(todo: Todo) {
         val newCsv = todo.toCsvFormat()
 
