@@ -47,4 +47,9 @@ class TaskListFragment : Fragment() {
         return binding.root
     }
 
+    override fun onPause() {
+        //todo: make mvvm work correctly
+        super.onPause()
+    }
+
 }
