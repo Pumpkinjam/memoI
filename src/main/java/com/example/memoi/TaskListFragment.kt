@@ -9,8 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.MemoI.TaskAdapter
-import com.example.MemoI.TodoAdapter
+import com.example.memoi.TaskAdapter
 import com.example.memoi.databinding.FragmentTodoListBinding
 import com.example.memoi.todo.Task
 import com.example.memoi.todo.Todo

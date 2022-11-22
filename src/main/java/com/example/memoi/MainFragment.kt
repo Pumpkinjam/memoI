@@ -40,6 +40,7 @@ class MainFragment : Fragment() {
         binding.btnAddNew.setOnClickListener {
             // todo : save all lists
             parentActivity.goToFragment(AddNewFragment())
+            println(vm.getTodoList())
         }
 
         return binding.root

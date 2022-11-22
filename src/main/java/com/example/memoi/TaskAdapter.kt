@@ -1,4 +1,4 @@
-package com.example.MemoI
+package com.example.memoi
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

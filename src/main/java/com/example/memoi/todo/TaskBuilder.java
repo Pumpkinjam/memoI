@@ -107,10 +107,10 @@ public class TaskBuilder {
      */
     public static TaskBuilder of(String csv) {
         StringTokenizer st = new StringTokenizer(csv, ", ");
-        System.out.println(st.countTokens());
+        //System.out.println(st.countTokens());
         ArrayList<String> tokens = new ArrayList<>();
         while (st.hasMoreTokens()) tokens.add(st.nextToken());
-        System.out.println(tokens.size());
+        //System.out.println(tokens.size());
         try {
             String title = tokens.get(0);
             String desc = tokens.get(1); if (desc.equals("null")) desc = null;
