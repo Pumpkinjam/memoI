@@ -23,10 +23,16 @@ class TodoRepository {
         todoRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // snapshot.value becomes java.util.HashMap
-                val hm = snapshot.value as HashMap<*, String>
+                val hm = snapshot.value as? HashMap<*, *>
+                val arr = ArrayList<String?>()
+
+                // todo : solve null-cast problem
+                for (key in hm.keys) {
+                    arr.add(if (hm[key] == null) null else hm[key].toString())
+                }
+
                 val res = TodoBuilder(
-                    hm["title"], hm["description"],
-                    hm["date"], hm["time"], hm["location"]
+                    arr[0], arr[1], arr[2], arr[3], arr[4]
                 )
                 todoData.postValue(res.build())
             }
