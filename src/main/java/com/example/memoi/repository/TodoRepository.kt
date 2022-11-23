@@ -19,21 +19,35 @@ class TodoRepository {
 
         val todoRef = database.getReference("list/$key")
 
-
         todoRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                println(snapshot)
                 // snapshot.value becomes java.util.HashMap
                 val hm = snapshot.value as? HashMap<*, *>
-                val arr = ArrayList<String?>()
 
-                // todo : solve null-cast problem
-                for (key in hm.keys) {
-                    arr.add(if (hm[key] == null) null else hm[key].toString())
+                // initializing arrayList for TodoBuilder
+                val arr = ArrayList<String?>(6)
+                for (i in 0..6) {
+                    arr.add(null)
                 }
 
-                val res = TodoBuilder(
-                    arr[0], arr[1], arr[2], arr[3], arr[4]
-                )
+                if (hm == null) println("Why???")
+                // todo : solve null-cast problem
+                for (mapKey in hm!!.keys) {
+                    //arr.add(java.lang.String.valueOf(hm[key]))
+                    val idx = when (mapKey) {
+                        "title" -> 0
+                        "description" -> 1
+                        "date" -> 2
+                        "time" -> 3
+                        "location" -> 4
+                        else -> 5   // index for garbage data (ex. timestamp)
+                    }
+                    arr[idx] = (hm[mapKey])?.toString()
+                }
+
+                // construct with ArrayList
+                val res = TodoBuilder(arr)
                 todoData.postValue(res.build())
             }
 
@@ -47,6 +61,8 @@ class TodoRepository {
     fun postTodo(key: String, newTodo: Todo) {
         val todoRef = database.getReference("list/$key")
         //val csvRef = database.getReference("list/$key")
+        println("posting Todo...")
+
         try {
             todoRef.setValue(newTodo)
         }

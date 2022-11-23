@@ -52,6 +52,22 @@ public class TodoBuilder{
         this.location = location;
     }
 
+    public TodoBuilder(ArrayList<String> args) {
+        // get arguments dynamically
+        try {
+            this.title = args.get(0);
+            this.description = args.get(1);
+            if (date != null) LocalDate.parse(date);
+            this.date = args.get(2);
+            if (time != null) LocalTime.parse(date);
+            this.time = args.get(3);
+            this.location = args.get(4);
+        }
+        // if the index of arguments ended...
+        // just stop constructing.
+        catch (IndexOutOfBoundsException e) {}
+    }
+
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }
 
@@ -86,6 +102,10 @@ public class TodoBuilder{
         if (this.title == null) {
             throw new Task.NullIntegrityException();
         }
+
+        System.out.println("Building Todo with...");
+        System.out.printf("title : %s\ndesc : %s\ndate : %s\ntime : %s\nloc : %s",
+                this.title, this.description, this.date, this.time, this.location);
         return new Todo(this.title, this.description, this.date, this.time, this.location);
     }
 
