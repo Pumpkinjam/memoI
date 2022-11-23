@@ -6,6 +6,7 @@ import java.time.*;
 
 public class TodoBuilder{
 
+    String created;
     String title;
     String description;
     String date;
@@ -13,6 +14,7 @@ public class TodoBuilder{
     String location;
 
     public TodoBuilder() {
+        this.created = null;
         this.title = null;
         this.description = null;
         this.date = null;
@@ -21,19 +23,20 @@ public class TodoBuilder{
     }
 
     // lots of... constructors... for null proccessing
-    public TodoBuilder(String title) {
-        this(title, null, (String)null, null, null);
+    public TodoBuilder(String created, String title) {
+        this(created, title, null, (String)null, null, null);
     }
 
-    public TodoBuilder(String title, String description) {
-        this(title, description, (String)null, null, null);
+    public TodoBuilder(String created, String title, String description) {
+        this(created, title, description, (String)null, null, null);
     }
 
-    public TodoBuilder(String title, String description, LocalDate date, LocalTime time) {
-        this(title, description, date, time, null);
+    public TodoBuilder(String created, String title, String description, LocalDate date, LocalTime time) {
+        this(created, title, description, date, time, null);
     }
 
-    public TodoBuilder(String title, String description, LocalDate date, LocalTime time, String location) {
+    public TodoBuilder(String created, String title, String description, LocalDate date, LocalTime time, String location) {
+        this.created = created;
         this.title = title;
         this.description = description;
         this.date = date.toString();
@@ -41,10 +44,11 @@ public class TodoBuilder{
         this.location = location;
     }
 
-    public TodoBuilder(String title, String description, String date, String time, String location) {
+    public TodoBuilder(String created, String title, String description, String date, String time, String location) {
         if (date != null) LocalDate.parse(date);
         if (time != null) LocalTime.parse(time);
 
+        this.created = created;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -55,13 +59,14 @@ public class TodoBuilder{
     public TodoBuilder(ArrayList<String> args) {
         // get arguments dynamically
         try {
-            this.title = args.get(0);
-            this.description = args.get(1);
+            this.created = args.get(0);
+            this.title = args.get(1);
+            this.description = args.get(2);
             if (date != null) LocalDate.parse(date);
-            this.date = args.get(2);
+            this.date = args.get(3);
             if (time != null) LocalTime.parse(date);
-            this.time = args.get(3);
-            this.location = args.get(4);
+            this.time = args.get(4);
+            this.location = args.get(5);
         }
         // if the index of arguments ended...
         // just stop constructing.
@@ -104,9 +109,9 @@ public class TodoBuilder{
         }
 
         System.out.println("Building Todo with...");
-        System.out.printf("title : %s\ndesc : %s\ndate : %s\ntime : %s\nloc : %s",
-                this.title, this.description, this.date, this.time, this.location);
-        return new Todo(this.title, this.description, this.date, this.time, this.location);
+        System.out.printf("created : %s\ntitle : %s\ndesc : %s\ndate : %s\ntime : %s\nloc : %s\n",
+                this.created, this.title, this.description, this.date, this.time, this.location);
+        return new Todo(this.created, this.title, this.description, this.date, this.time, this.location);
     }
 
     /* format of
@@ -114,6 +119,7 @@ public class TodoBuilder{
      * "___", "___", "yyyy-MM-dd", "HH-mm", ???
      * all values has "null" if null
      */
+    /*
     public static TodoBuilder of(String csv) {
         StringTokenizer st = new StringTokenizer(csv, ", ");
         //System.out.println(st.countTokens());
@@ -140,4 +146,5 @@ public class TodoBuilder{
             return new TodoBuilder("Error", "Occured.", LocalDate.now(), LocalTime.now());
         }
     }
+    */
 }

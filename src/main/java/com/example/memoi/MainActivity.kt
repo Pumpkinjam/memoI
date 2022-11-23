@@ -9,11 +9,13 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
+import com.example.memoi.viewmodel.TodoListViewModel
 import java.time.LocalDateTime
 import java.util.*
 
@@ -52,6 +54,11 @@ class MainActivity : AppCompatActivity() {
 
         if (fragStack.empty()) {super.onBackPressed()}
         else { exitFragment() }
+    }
+
+    override fun onDestroy() {
+
+        super.onDestroy()
     }
 
     // todo: make it be able to be used generally

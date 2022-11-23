@@ -7,13 +7,47 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.*
 import com.google.firebase.ktx.Firebase
 import java.lang.reflect.InvocationTargetException
 import kotlin.collections.HashMap
 
 class TodoRepository {
-    val database = Firebase.database
+
+    // static field
+    companion object {
+        var n = 1;
+        var snapCatcher: DataSnapshot? = null;
+    }
+
+
+    private val database = Firebase.database
+
+    fun getTodo(key: String): Todo {
+
+        val tmpRef = database.getReference("list")
+
+        tmpRef.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                TodoRepository.snapCatcher = snapshot
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                println("oh... error occurred at TodoRepository.getTodo")
+                println(error.message)
+            }
+        })
+
+        tmpRef.setValue(getN())
+
+        // actually non-null (maybe)
+        return (snapCatcher!!.child(key).getValue() as Todo)
+    }
+
+    private fun getN(): Int {
+        n = (n+1)%12345678;
+        return n
+    }
 
     fun observeTodo(key: String, todoData: MutableLiveData<Todo>) {
 
@@ -26,8 +60,8 @@ class TodoRepository {
                 val hm = snapshot.value as? HashMap<*, *>
 
                 // initializing arrayList for TodoBuilder
-                val arr = ArrayList<String?>(6)
-                for (i in 0..6) {
+                val arr = ArrayList<String?>(7)
+                for (i in 0..7) {
                     arr.add(null)
                 }
 
@@ -36,12 +70,13 @@ class TodoRepository {
                 for (mapKey in hm!!.keys) {
                     //arr.add(java.lang.String.valueOf(hm[key]))
                     val idx = when (mapKey) {
-                        "title" -> 0
-                        "description" -> 1
-                        "date" -> 2
-                        "time" -> 3
-                        "location" -> 4
-                        else -> 5   // index for garbage data (ex. timestamp)
+                        "created" -> 0
+                        "title" -> 1
+                        "description" -> 2
+                        "date" -> 3
+                        "time" -> 4
+                        "location" -> 5
+                        else -> 6   // index for garbage data (ex. timestamp)
                     }
                     arr[idx] = (hm[mapKey])?.toString()
                 }
@@ -57,9 +92,8 @@ class TodoRepository {
         })
     }
 
-
-    fun postTodo(key: String, newTodo: Todo) {
-        val todoRef = database.getReference("list/$key")
+    fun postTodo(newTodo: Todo) {
+        val todoRef = database.getReference("list/${newTodo.created}")
         //val csvRef = database.getReference("list/$key")
         println("posting Todo...")
 
@@ -78,6 +112,10 @@ class TodoRepository {
 
     fun removeTodo(key: String) {
         database.getReference("list/$key").removeValue()
+    }
+
+    fun removeTodo(todo: Todo) {
+        database.getReference("list/${todo.created}").removeValue()
     }
 /*
     fun observeCsv(key: String, todoCsv: MutableLiveData<String>) {

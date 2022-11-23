@@ -24,11 +24,11 @@ public class Todo extends Task {
     // TODO: find appropriate class for location
     String location;
 
-    Todo(String title, String description, String date, String time, String location) {
-        super(title, description, date, time);
+    Todo(String created, String title, String description, String date, String time, String location) {
+        super(created, title, description, date, time);
         this.location = location;
     }
-    Todo(String title, String description, LocalDate date, LocalTime time, String location) {
+    Todo(String created, String title, String description, LocalDate date, LocalTime time, String location) {
         /*
         if (title == null) throw new NullIntegrityException();
 
@@ -39,7 +39,7 @@ public class Todo extends Task {
         this.timing = (date != null && time != null) ? LocalDateTime.of(date, time) : null;
         this.location = location;
         */
-        super(title, description, date, time);
+        super(created, title, description, date, time);
         this.location = location;
     }
 
@@ -112,11 +112,13 @@ public class Todo extends Task {
     // toString() Override
     @Override
     public String toString() {
-        return "<Object Todo : " + created + ">" +
+        return "====================" +
+                "\n<Object Todo : " + created + ">" +
                 "\nTitle: " + title +
                 "\nDescription: " + description +
                 "\nDate: " + date +
                 "\nTime: " + time +
-                "\nLocation" + location;
+                "\nLocation" + location +
+                "\n====================";
     }
 }

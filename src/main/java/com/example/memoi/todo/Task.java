@@ -25,15 +25,18 @@ public abstract class Task {
         }
     }
 
-    Task(String title, String description, String date, String time) {
-        // firebase database paths must not contain '.'
-        this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
+    Task(String created, String title, String description, String date, String time) {
+        if (title == null) throw new Task.NullIntegrityException();
 
         // parsable String checking
         if (date != null) LocalDate.parse(date);
         if (time != null) LocalTime.parse(time);
 
-        if (title == null) throw new Task.NullIntegrityException();
+        if (created != null)
+            this.created = created;
+        // firebase database paths must not contain '.'
+        else
+            this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
 
         this.title = title;
         this.description = description;
@@ -41,8 +44,14 @@ public abstract class Task {
         this.time = time;
     }
 
-    Task(String title, String description, LocalDate date, LocalTime time) {
+    Task(String created, String title, String description, LocalDate date, LocalTime time) {
         if (title == null) throw new Task.NullIntegrityException();
+
+        if (created != null)
+            this.created = created;
+            // firebase database paths must not contain '.'
+        else
+            this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
 
         // firebase database paths must not contain '.'
         this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
@@ -56,7 +65,7 @@ public abstract class Task {
     /* formatting to
      * "{title}, {description}, {time}, {date}, {location}\n"
      */
-    // TODO: in csv, we can't save character ","...
+    // well, this code no longer seems to be used...
     public String toCsvFormat() {
         String res = "";
         //res += instanceNum + ", ";

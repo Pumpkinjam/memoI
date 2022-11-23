@@ -10,7 +10,8 @@ import androidx.fragment.app.activityViewModels
 import com.example.memoi.databinding.FragmentMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
-import java.util.ArrayList
+import java.io.IOException
+import java.util.*
 
 class MainFragment : Fragment() {
 
@@ -44,6 +45,63 @@ class MainFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onPause() {
+        vm.getList()
+        super.onPause()
+    }
+
+    private fun saveKeyList() {
+        // TODO: imagine that what happens if the saving progress fails...
+        // TODO: we need something more safe way
+        try {
+            // must save " " at the end of the file!!
+            var str = ""
+            for (td in todoList) str += td.created + " ";
+            str += "\n"
+
+            parentActivity.openFileOutput("keyList.sav", Context.MODE_PRIVATE).write(str.toByteArray())
+
+            println("keyList save completed.")
+        }
+        catch (e: IOException) {
+            System.err.println("keyList save failure.")
+            e.printStackTrace()
+        }
+    }
+
+    private fun loadKeyList() {
+
+        val keys: ArrayList<String> = ArrayList<String>()
+
+        println("=================")
+
+        if ("keyList.sav" in parentActivity.fileList())
+            println("keyList.sav found!")
+        else
+            parentActivity.openFileOutput("keyList.sav", Context.MODE_PRIVATE).use {
+                println("Creating new file...")
+                it.write(" ".toByteArray())
+            }
+
+        val line = parentActivity.openFileInput("keyList.sav").bufferedReader().readLine()
+        val st = StringTokenizer(line)
+
+        while (st.hasMoreTokens()) {
+            val tmpKey = st.nextToken()
+            println(tmpKey)
+            this.todoList.add(vm.getTodo(tmpKey))
+        }
+        vm.setList(todoList)
+        println("----------------\nload complete.\n=================")
+
+
     }
 
 }
