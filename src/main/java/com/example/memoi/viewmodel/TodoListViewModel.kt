@@ -14,7 +14,6 @@ class TodoListViewModel: ViewModel() {
     private val _todoList = ArrayList<MutableLiveData<Todo>>()
     val todoList : ArrayList<MutableLiveData<Todo>> get() = _todoList
 
-
     fun add(todo: Todo) {
         this._todoList.add(MutableLiveData<Todo>(todo))
         repository.postTodo(todo.created, todo)
