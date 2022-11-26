@@ -7,6 +7,7 @@ import java.time.*;
 public class TodoBuilder extends TaskBuilder {
     Object location;
 
+
     public final class NullIntegrityException extends RuntimeException {
         NullIntegrityException() {
             super("title cannot be null");
@@ -47,6 +48,8 @@ public class TodoBuilder extends TaskBuilder {
         super(title, description, date, time);
         this.location = location;
     }
+
+
 /*
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }

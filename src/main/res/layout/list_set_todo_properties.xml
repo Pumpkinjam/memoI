@@ -14,10 +14,10 @@
         android:clickable="true"
         android:src="@drawable/url"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_url" />
+        app:layout_constraintTop_toTopOf="@+id/input_url" />
 
-    <Button
-        android:id="@+id/btn_url"
+    <EditText
+        android:id="@+id/input_url"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:layout_marginTop="32dp"
@@ -173,7 +173,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/img_set_time"
-        app:layout_constraintTop_toBottomOf="@+id/btn_url" />
+        app:layout_constraintTop_toBottomOf="@+id/input_url" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"

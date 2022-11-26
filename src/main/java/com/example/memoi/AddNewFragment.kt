@@ -10,7 +10,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -156,6 +155,19 @@ class AddNewFragment : Fragment() {
                             hour, minute, false)
                         time.show()
                     }
+
+                    inputUrl.addTextChangedListener(object: TextWatcher {
+                        override fun beforeTextChanged(
+                            s: CharSequence?, start: Int, count: Int, after: Int) { }
+
+                        override fun onTextChanged(
+                            s: CharSequence?, start: Int, before: Int, count: Int)
+                        {
+                            currentFragment.tempTodo.setUrl(s.toString())
+                        }
+
+                        override fun afterTextChanged(s: Editable?) { }
+                    })
 
                     btnOpenMap.setOnClickListener {
                         // TODO: open MapView, set Location
