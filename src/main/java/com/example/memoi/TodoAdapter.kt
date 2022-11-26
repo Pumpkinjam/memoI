@@ -1,6 +1,7 @@
 package com.example.memoi
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.memoi.R
@@ -28,9 +29,11 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
 
                 txtTodoInfoTitle.text = todo.title
                 txtTodoInfoDesc.text = todo.description
-                btnUrlMove.text = todo.seturl
                 txtTodoInfoDate.text = todo.date
                 txtTodoInfoTime.text = todo.time
+                if (todo.url == null) {
+                    btnUrlMove.visibility = View.INVISIBLE
+                }
 
 
                 root.setOnClickListener {

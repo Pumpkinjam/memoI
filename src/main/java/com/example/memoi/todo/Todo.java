@@ -9,38 +9,21 @@ import java.time.format.DateTimeFormatter;
 import kotlin.jvm.JvmName;
 
 public class Todo extends Task {
-    /*
-
-    // in general case, this can't be null
-    public String title;            // title NOT NULL
-
-    public String description;
-
-    private LocalDateTime timing;
-    private LocalDate date;
-    private LocalTime time;
-    */
 
     // TODO: find appropriate class for location
     String location;
+    String url;
 
-    Todo(String title, String description, String date, String time, String location) {
+    Todo(String title, String description, String date, String time, String location, String url) {
         super(title, description, date, time);
         this.location = location;
+        this.url = url;
     }
-    Todo(String title, String description, LocalDate date, LocalTime time, String location) {
-        /*
-        if (title == null) throw new NullIntegrityException();
 
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.time = time;
-        this.timing = (date != null && time != null) ? LocalDateTime.of(date, time) : null;
-        this.location = location;
-        */
+    Todo(String title, String description, LocalDate date, LocalTime time, String location, String url) {
         super(title, description, date, time);
         this.location = location;
+        this.url = url;
     }
 
 
@@ -108,6 +91,8 @@ public class Todo extends Task {
     public void setTime(int h, int m) {
         this.setNewTime(LocalTime.of(h, m));
     }
+
+    public String getUrl() { return this.url; }
 
     // toString() Override
     @Override

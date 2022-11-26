@@ -11,6 +11,7 @@ public class TodoBuilder{
     String date;
     String time;
     String location;
+    String url;
 
     public TodoBuilder() {
         this.title = null;
@@ -18,30 +19,32 @@ public class TodoBuilder{
         this.date = null;
         this.time = null;
         this.location = null;
+        this.url = null;
     }
 
     // lots of... constructors... for null proccessing
     public TodoBuilder(String title) {
-        this(title, null, (String)null, null, null);
+        this(title, null, (String)null, null, null, null);
     }
 
     public TodoBuilder(String title, String description) {
-        this(title, description, (String)null, null, null);
+        this(title, description, (String)null, null, null, null);
     }
 
     public TodoBuilder(String title, String description, LocalDate date, LocalTime time) {
-        this(title, description, date, time, null);
+        this(title, description, date, time, null, null);
     }
 
-    public TodoBuilder(String title, String description, LocalDate date, LocalTime time, String location) {
+    public TodoBuilder(String title, String description, LocalDate date, LocalTime time, String location, String url) {
         this.title = title;
         this.description = description;
         this.date = date.toString();
         this.time = time.toString();
         this.location = location;
+        this.url = url;
     }
 
-    public TodoBuilder(String title, String description, String date, String time, String location) {
+    public TodoBuilder(String title, String description, String date, String time, String location, String url) {
         if (date != null) LocalDate.parse(date);
         if (time != null) LocalTime.parse(time);
 
@@ -50,6 +53,7 @@ public class TodoBuilder{
         this.date = date;
         this.time = time;
         this.location = location;
+        this.url = url;
     }
 
 
@@ -82,12 +86,15 @@ public class TodoBuilder{
         this.setTime(LocalTime.of(h, m));
     }
 
+    public void setLocation(String location) { this.location = location; }
+
+    public void setUrl(String url) { this.url = url; }
 
     public Todo build() throws Exception {
         if (this.title == null) {
             throw new Task.NullIntegrityException();
         }
-        return new Todo(this.title, this.description, this.date, this.time, this.location);
+        return new Todo(this.title, this.description, this.date, this.time, this.location, this.url);
     }
 
     /* format of
@@ -95,6 +102,7 @@ public class TodoBuilder{
      * "___", "___", "yyyy-MM-dd", "HH-mm", ???
      * all values has "null" if null
      */
+    /*
     public static TodoBuilder of(String csv) {
         StringTokenizer st = new StringTokenizer(csv, ", ");
         //System.out.println(st.countTokens());
@@ -121,4 +129,5 @@ public class TodoBuilder{
             return new TodoBuilder("Error", "Occured.", LocalDate.now(), LocalTime.now());
         }
     }
+    */
 }

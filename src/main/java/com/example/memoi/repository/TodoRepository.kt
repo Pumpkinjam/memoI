@@ -26,7 +26,8 @@ class TodoRepository {
                 val hm = snapshot.value as HashMap<*, String>
                 val res = TodoBuilder(
                     hm["title"], hm["description"],
-                    hm["date"], hm["time"], hm["location"]
+                    hm["date"], hm["time"],
+                    hm["location"], hm["url"]
                 )
                 todoData.postValue(res.build())
             }
@@ -57,34 +58,5 @@ class TodoRepository {
     fun removeTodo(key: String) {
         database.getReference("list/$key").removeValue()
     }
-/*
-    fun observeCsv(key: String, todoCsv: MutableLiveData<String>) {
-
-        val csvRef = database.getReference("list/$key")
-
-
-        csvRef.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                todoCsv.postValue(snapshot.value.toString())
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                println("Failed to get value")
-            }
-        })
-    }
-
-
-    fun postCsv(key: String, newCsv: String) {
-        val csvRef =
-            database.getReferenceFromUrl(
-                "https://memoi-bced4-default-rtdb.firebaseio.com/list/$key")
-        //val csvRef = database.getReference("list/$key")
-        csvRef.setValue(newCsv)
-    }
-
-    fun removeCsv(key: String) {
-        database.getReference("list/$key").removeValue()
-    }*/
 
 }
