@@ -28,6 +28,7 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
 
                 txtTodoInfoTitle.text = todo.title
                 txtTodoInfoDesc.text = todo.description
+                btnUrlMove.text = todo.seturl
                 txtTodoInfoDate.text = todo.date
                 txtTodoInfoTime.text = todo.time
 
