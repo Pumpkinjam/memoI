@@ -52,6 +52,7 @@ public class TodoBuilder{
         this.location = location;
     }
 
+
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }
 
