@@ -27,6 +27,7 @@ class TodoListFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         parentActivity = context as Activity
+        todoList = ArrayList<Todo>()
     }
 
     override fun onCreateView(
@@ -34,7 +35,8 @@ class TodoListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoListBinding.inflate(inflater, container, false)
-        todoList = vm.getList()
+        //todoList = vm.retrieveTodoList()
+        vm.retrieveTodoList()
 
         binding.recTodo.layoutManager = LinearLayoutManager(parentActivity)
         // or... binding.recTodo.layoutManager = LinearLayoutManager(activity)

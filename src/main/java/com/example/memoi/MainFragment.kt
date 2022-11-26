@@ -24,6 +24,7 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         parentActivity = context as MainActivity
+        todoList = ArrayList<Todo>()
     }
 
     override fun onCreateView(
@@ -31,7 +32,8 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMainBinding.inflate(inflater, container, false);
-        todoList = vm.getList()
+        //todoList = vm.getList()
+        vm.retrieveTodoList()
 
         childFragmentManager.beginTransaction().run {
             replace(binding.frmTodoList.id, TodoListFragment())
@@ -39,21 +41,22 @@ class MainFragment : Fragment() {
         }
 
         binding.btnAddNew.setOnClickListener {
-            // todo : save all lists
             parentActivity.goToFragment(AddNewFragment())
-            println(vm.getList())
+            //println(vm.getList())
         }
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        //vm.getTodo("test")
+        //vm.getListFromRepo(ArrayList<String>())
+        this.todoList
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onPause() {
-        vm.getList()
+        saveKeyList()
         super.onPause()
     }
 
@@ -96,9 +99,9 @@ class MainFragment : Fragment() {
         while (st.hasMoreTokens()) {
             val tmpKey = st.nextToken()
             println(tmpKey)
-            this.todoList.add(vm.getTodo(tmpKey))
+            //this.todoList.add(vm.getTodo(tmpKey))
         }
-        vm.setList(todoList)
+        //vm.setList(todoList)
         println("----------------\nload complete.\n=================")
 
 

@@ -9,44 +9,46 @@ import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.*
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.http.GET
+import retrofit2.http.Path
 import java.lang.reflect.InvocationTargetException
 import kotlin.collections.HashMap
 
+interface Retro {
+    @GET("list")
+    fun getList(): Call<JSONArray>
+}
+
 class TodoRepository {
 
-    // static field
-    companion object {
-        var n = 1;
-        var snapCatcher: DataSnapshot? = null;
-    }
-
-
     private val database = Firebase.database
+    private val fbUrl = "https://memoi-bced4-default-rtdb.firebaseio.com/"
+    private val retrofit: Retrofit? = Retrofit.Builder().baseUrl(fbUrl).build()
+    val retrofitApi = retrofit?.create(Retro::class.java)
 
-    fun getTodo(key: String): Todo {
+    suspend fun readList()/*: JSONArray?*/ {
 
-        val tmpRef = database.getReference("list")
+        withContext(Dispatchers.IO) {
+            retrofitApi?.getList()?.enqueue(object : Callback<JSONArray> {
+                override fun onResponse(call: Call<JSONArray>, response: Response<JSONArray>) {
+                    val json: JSONArray? = response.body()
+                    println(json)
+                }
 
-        tmpRef.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                TodoRepository.snapCatcher = snapshot
-            }
+                override fun onFailure(call: Call<JSONArray>, t: Throwable) {
+                    println("f")
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-                println("oh... error occurred at TodoRepository.getTodo")
-                println(error.message)
-            }
-        })
+            })
+        }
 
-        tmpRef.setValue(getN())
-
-        // actually non-null (maybe)
-        return (snapCatcher!!.child(key).getValue() as Todo)
-    }
-
-    private fun getN(): Int {
-        n = (n+1)%12345678;
-        return n
     }
 
     fun observeTodo(key: String, todoData: MutableLiveData<Todo>) {
@@ -90,6 +92,7 @@ class TodoRepository {
                 println("Failed to get value")
             }
         })
+
     }
 
     fun postTodo(newTodo: Todo) {
@@ -117,34 +120,5 @@ class TodoRepository {
     fun removeTodo(todo: Todo) {
         database.getReference("list/${todo.created}").removeValue()
     }
-/*
-    fun observeCsv(key: String, todoCsv: MutableLiveData<String>) {
-
-        val csvRef = database.getReference("list/$key")
-
-
-        csvRef.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                todoCsv.postValue(snapshot.value.toString())
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                println("Failed to get value")
-            }
-        })
-    }
-
-
-    fun postCsv(key: String, newCsv: String) {
-        val csvRef =
-            database.getReferenceFromUrl(
-                "https://memoi-bced4-default-rtdb.firebaseio.com/list/$key")
-        //val csvRef = database.getReference("list/$key")
-        csvRef.setValue(newCsv)
-    }
-
-    fun removeCsv(key: String) {
-        database.getReference("list/$key").removeValue()
-    }*/
 
 }
