@@ -24,8 +24,8 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
     class Holder(private val binding: ListTodoBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(todo: Todo) {
             with (binding) {
-                //
-                imgTodo.setImageResource(if (todo.getDate() == null) R.drawable.clock else R.drawable.calendar);
+                
+                imgTodo.setImageResource(if (todo.date == null) R.drawable.clock else R.drawable.calendar);
 
                 txtTodoInfoTitle.text = todo.title
                 txtTodoInfoDesc.text = todo.description

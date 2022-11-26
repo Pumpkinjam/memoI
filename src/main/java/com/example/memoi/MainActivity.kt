@@ -10,10 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
+import com.example.memoi.databinding.FragmentMainBinding
 import java.time.LocalDateTime
 import java.util.*
 
@@ -49,10 +52,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
         if (fragStack.empty()) {super.onBackPressed()}
         else { exitFragment() }
     }
+
 
     // todo: make it be able to be used generally
     fun notificate() {

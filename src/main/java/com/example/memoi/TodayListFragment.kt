@@ -9,19 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.memoi.TaskAdapter
-import com.example.memoi.databinding.FragmentTodoListBinding
+import com.example.memoi.databinding.FragmentTodayListBinding
 import com.example.memoi.todo.Task
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
+import java.time.LocalDate
 import java.util.ArrayList
 
-class TaskListFragment : Fragment() {
+class TodayListFragment : Fragment() {
 
     val vm: TodoListViewModel by activityViewModels()
-    lateinit var taskList: ArrayList<Task>
+    lateinit var todoList: ArrayList<Todo>
 
-    lateinit var binding: FragmentTodoListBinding
+    lateinit var binding: FragmentTodayListBinding
     lateinit var parentActivity: Activity
 
     // getting attached activity.
@@ -34,14 +34,21 @@ class TaskListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTodoListBinding.inflate(inflater, container, false)
-        taskList = ArrayList<Task>()
+        binding = FragmentTodayListBinding.inflate(inflater, container, false)
+        todoList = ArrayList<Todo>()
 
         // todo: get todoList&taskList from viewModel
+        val todayList = ArrayList<Todo>()
+        for (todo in todoList) {
+            if (todo.date != null &&
+                LocalDate.now().isEqual(LocalDate.parse(todo.date)))
+                println("\n\n\n\n" + todo.date)
+                todayList.add(todo)
+        }
 
-        // or... binding.recTodo.layoutManager = LinearLayoutManager(activity)
-        binding.recTodo.layoutManager = LinearLayoutManager(parentActivity)
-        binding.recTodo.adapter = TaskAdapter(taskList)
+
+        binding.recToday.layoutManager = LinearLayoutManager(parentActivity)
+        binding.recToday.adapter = TodayAdapter(todayList)
 
         return binding.root
     }

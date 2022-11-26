@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.FragmentMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
@@ -33,7 +36,7 @@ class MainFragment : Fragment() {
         todoList = vm.getList()
 
         childFragmentManager.beginTransaction().run {
-            replace(binding.frmTodoList.id, TodoListFragment())
+            replace(binding.frgNav.id, TodoListFragment())
             commit()
         }
 
@@ -42,6 +45,7 @@ class MainFragment : Fragment() {
             parentActivity.goToFragment(AddNewFragment())
             println(vm.getList())
         }
+
 
         return binding.root
     }
