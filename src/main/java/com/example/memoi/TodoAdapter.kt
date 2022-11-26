@@ -1,4 +1,4 @@
-package com.example.MemoI
+package com.example.memoi
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,8 +29,8 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
                 txtTodoInfoTitle.text = todo.title
                 txtTodoInfoDesc.text = todo.description
                 btnUrlMove.text = todo.seturl
-                txtTodoInfoDate.text = todo.dateToString()
-                txtTodoInfoTime.text = todo.timeToString()
+                txtTodoInfoDate.text = todo.date
+                txtTodoInfoTime.text = todo.time
 
 
                 root.setOnClickListener {

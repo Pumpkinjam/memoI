@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import kotlin.jvm.JvmName;
+
 public class Todo extends Task {
     /*
 
@@ -20,10 +22,13 @@ public class Todo extends Task {
     */
 
     // TODO: find appropriate class for location
-    Object location;
+    String location;
 
-
-    Todo(String title, String description, LocalDate date, LocalTime time, Object location) {
+    Todo(String title, String description, String date, String time, String location) {
+        super(title, description, date, time);
+        this.location = location;
+    }
+    Todo(String title, String description, LocalDate date, LocalTime time, String location) {
         /*
         if (title == null) throw new NullIntegrityException();
 
@@ -42,7 +47,6 @@ public class Todo extends Task {
     /* formatting to
      * "{title}, {description}, {time}, {date}, {location}\n"
      */
-    // TODO: in csv, we can't save character ","...
     @Override
     public String toCsvFormat() {
         String res = "";
@@ -65,38 +69,44 @@ public class Todo extends Task {
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }
 
-    public void setTiming(LocalDateTime timing) {
-        this.timing = timing;
+
+    public String getDate() { return this.date; }
+
+    public String getTime() { return this.time; }
+
+    public LocalDate getLocalDate() { return this.date == null ? null :
+            LocalDate.parse(this.date); }
+
+    public LocalTime getLocalTime() { return this.time == null ? null :
+            LocalTime.parse(this.time); }
+
+    @JvmName(name = "TodoSetDate")
+    public void setNewDate(LocalDate date) {
+        this.date = date.toString();
     }
 
-    public LocalDateTime getTiming() {
-        return this.timing;
-    }
-
-    public LocalDate getDate() { return this.date; }
-
-    public LocalTime getTime() { return this.time; }
-
-    public void setDate(LocalDate date) {
+    @JvmName(name = "TodoSetDate")
+    public void setNewDate(String date) {
+        LocalDate.parse(date);  // parsable checking
         this.date = date;
-        if (this.time != null) {
-            this.timing = LocalDateTime.of(date, this.time);
-        }
     }
 
-    public void setDate(int y, int m, int d) {
-        this.setDate(LocalDate.of(y, m, d));
+    @JvmName(name = "TodoSetDate")
+    public void setNewDate(int y, int m, int d) {
+        this.setNewDate(LocalDate.of(y, m, d));
     }
 
-    public void setTime(LocalTime time) {
+    public void setNewTime(LocalTime time) {
+        this.time = time.toString();
+    }
+
+    public void setNewTime(String time) {
+        LocalTime.parse(time);
         this.time = time;
-        if (this.date != null) {
-            this.timing = LocalDateTime.of(this.date, time);
-        }
     }
 
     public void setTime(int h, int m) {
-        this.setTime(LocalTime.of(h, m));
+        this.setNewTime(LocalTime.of(h, m));
     }
 
     // toString() Override
@@ -105,18 +115,8 @@ public class Todo extends Task {
         return "<Object Todo : " + created + ">" +
                 "\nTitle: " + title +
                 "\nDescription: " + description +
-                "\nTiming: " + timing +
+                "\nDate: " + date +
+                "\nTime: " + time +
                 "\nLocation" + location;
     }
-/*
-    public String dateToString() {
-        if (this.date == null) return "";
-        return this.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
-
-    public String timeToString() {
-        if (this.time == null) return "";
-        return this.time.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
-*/
 }

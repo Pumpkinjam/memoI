@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class Task {
+public abstract class Task {
 
     // primary key for the Instance
     public String created;  // instanceNum NOT NULL, not displayed for user
@@ -15,17 +15,31 @@ public class Task {
 
     public String description;
 
-    LocalDateTime timing;
-    LocalDate date;
-    LocalTime time;
+    /*LocalDate*/ String date;
+    /*LocalTime*/ String time;
 
 
-    public final class NullIntegrityException extends RuntimeException {
+    public static final class NullIntegrityException extends RuntimeException {
         NullIntegrityException() {
             super("title cannot be null");
         }
     }
 
+    Task(String title, String description, String date, String time) {
+        // firebase database paths must not contain '.'
+        this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
+
+        // parsable String checking
+        if (date != null) LocalDate.parse(date);
+        if (time != null) LocalTime.parse(time);
+
+        if (title == null) throw new Task.NullIntegrityException();
+
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.time = time;
+    }
 
     Task(String title, String description, LocalDate date, LocalTime time) {
         if (title == null) throw new Task.NullIntegrityException();
@@ -34,9 +48,8 @@ public class Task {
         this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
         this.title = title;
         this.description = description;
-        this.date = date;
-        this.time = time;
-        this.timing = (date != null && time != null) ? LocalDateTime.of(date, time) : null;
+        this.date = date == null ? null : date.toString();
+        this.time = time == null ? null : time.toString();
     }
 
 
@@ -69,16 +82,17 @@ public class Task {
         return "<Object Task : " + created + ">" +
                 "\nTitle: " + title +
                 "\nDescription: " + description +
-                "\nTiming: " + timing;
+                "\nDate: " + date +
+                "\nTime: " + time;
     }
 
     public String dateToString() {
         if (this.date == null) return "";
-        return this.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return this.date;
     }
 
     public String timeToString() {
         if (this.time == null) return "";
-        return this.time.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return this.time;
     }
 }
