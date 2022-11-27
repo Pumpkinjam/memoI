@@ -19,7 +19,7 @@ import java.util.ArrayList
 class TodayListFragment : Fragment() {
 
     val vm: TodoListViewModel by activityViewModels()
-    lateinit var todoList: ArrayList<Todo>
+    lateinit var todayList: ArrayList<Todo>
 
     lateinit var binding: FragmentTodayListBinding
     lateinit var parentActivity: Activity
@@ -35,17 +35,13 @@ class TodayListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodayListBinding.inflate(inflater, container, false)
-        todoList = ArrayList<Todo>()
+        todayList = vm.getTodayList()
 
-        // todo: get todoList&taskList from viewModel
-        val todayList = ArrayList<Todo>()
-        for (todo in todoList) {
-            if (todo.date != null &&
-                LocalDate.now().isEqual(LocalDate.parse(todo.date)))
-                println("\n\n\n\n" + todo.date)
-                todayList.add(todo)
+        println("Today is on view.")
+        // debugging: for check
+        for (t in todayList) {
+            println(t)
         }
-
 
         binding.recToday.layoutManager = LinearLayoutManager(parentActivity)
         binding.recToday.adapter = TodayAdapter(todayList)

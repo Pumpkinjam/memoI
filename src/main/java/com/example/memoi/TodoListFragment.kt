@@ -36,6 +36,12 @@ class TodoListFragment : Fragment() {
         binding = FragmentTodoListBinding.inflate(inflater, container, false)
         todoList = vm.getList()
 
+        println("Todo is on view.")
+        // debugging: for check
+        for (t in todoList) {
+            println(t)
+        }
+
         binding.recTodo.layoutManager = LinearLayoutManager(parentActivity)
         // or... binding.recTodo.layoutManager = LinearLayoutManager(activity)
         binding.recTodo.adapter = TodoAdapter(todoList)

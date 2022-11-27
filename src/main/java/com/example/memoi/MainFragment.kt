@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -19,7 +21,6 @@ class MainFragment : Fragment() {
 
     val vm: TodoListViewModel by activityViewModels()
     lateinit var parentActivity: MainActivity
-    lateinit var todoList: ArrayList<Todo>
 
     lateinit var binding: FragmentMainBinding
 
@@ -33,19 +34,15 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMainBinding.inflate(inflater, container, false);
-        todoList = vm.getList()
-
-        childFragmentManager.beginTransaction().run {
-            replace(binding.frgNav.id, TodoListFragment())
-            commit()
-        }
 
         binding.btnAddNew.setOnClickListener {
             // todo : save all lists
             parentActivity.goToFragment(AddNewFragment())
-            println(vm.getList())
         }
 
+        // what...
+        //val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
+        //binding.bottomNav.setupWithNavController(navcon)
 
         return binding.root
     }

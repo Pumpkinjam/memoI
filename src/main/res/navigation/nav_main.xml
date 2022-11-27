@@ -4,21 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
     app:startDestination="@id/todayListFragment">
+
+    <fragment
+        android:id="@+id/todayListFragment"
+        android:name="com.example.memoi.TodayListFragment"
+        android:label="TodayListFragment"
+        tools:layout="@layout/fragment_today_list"/>
+
     <fragment
         android:id="@+id/todoListFragment"
         android:name="com.example.memoi.TodoListFragment"
         android:label="fragment_todo_list"
-        tools:layout="@layout/fragment_todo_list" >
-        <action
-            android:id="@+id/action_todoListFragment_to_todayListFragment"
-            app:destination="@id/todayListFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/todayListFragment"
-        android:name="com.example.memoi.TodayListFragment"
-        android:label="TodayListFragment" >
-        <action
-            android:id="@+id/action_todayListFragment_to_todoListFragment"
-            app:destination="@id/todoListFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_todo_list" />
+
 </navigation>

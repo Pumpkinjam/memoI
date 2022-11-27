@@ -17,6 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MemoI"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC8Mi6FNMGFU6vY-Ja980H8MsjVwfzcBFE">
+        </meta-data>
+
         <activity
             android:name="com.example.memoi.MainActivity"
             android:exported="true">
@@ -26,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

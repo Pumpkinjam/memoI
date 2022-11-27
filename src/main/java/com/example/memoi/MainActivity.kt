@@ -8,6 +8,7 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -56,6 +57,12 @@ class MainActivity : AppCompatActivity() {
         else { exitFragment() }
     }
 
+    override fun onNavigateUp(): Boolean {
+        val navcon = binding.frmFragment.getFragment<MainFragment>()
+            .binding.frgNav.getFragment<NavHostFragment>().navController
+
+        return navcon.navigateUp() || super.onNavigateUp()
+    }
 
     // todo: make it be able to be used generally
     fun notificate() {

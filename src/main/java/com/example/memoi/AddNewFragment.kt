@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -66,9 +67,9 @@ class AddNewFragment : Fragment() {
                 parentActivity.exitFragment()
             }
             catch (e: Task.NullIntegrityException) {
-                println("?")
-                Snackbar.make(this.requireView(),
-                    "타이틀을 지정하지 않았습니다.", Snackbar.LENGTH_SHORT)
+                Snackbar
+                    .make(this.requireView(), "타이틀을 지정하지 않았습니다.", Snackbar.LENGTH_SHORT)
+                    .show()
             }
             catch (e: Exception) {
                 System.err.println("Something's wrong... in AddNewFragment.onViewCreated")
@@ -76,6 +77,8 @@ class AddNewFragment : Fragment() {
             }
         }
     }
+
+    fun setMap(mapView: FragmentContainerView) {}
 
 
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)
@@ -132,7 +135,6 @@ class AddNewFragment : Fragment() {
                         override fun afterTextChanged(s: Editable?) { }
                     })
 
-
                     btnSetDate.setOnClickListener {
                         val datePickerDialog =
                             DatePickerDialog.OnDateSetListener { datepicker, year, month, day ->
@@ -171,8 +173,7 @@ class AddNewFragment : Fragment() {
                     })
 
                     btnOpenMap.setOnClickListener {
-                        // TODO: open MapView, set Location
-                        Snackbar.make(parentActivity.binding.root, "구현중", Snackbar.LENGTH_SHORT)
+                        //currentFragment.setMap(binding.mapView)
                     }
 
                 }
