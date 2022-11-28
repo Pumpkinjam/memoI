@@ -57,10 +57,12 @@ class TodoBuilder {
         this.url = url
     }
 
+    @JvmName("todoBuilder_setTitle")
     fun setTitle(t: String?) {
         title = t
     }
 
+    @JvmName("todoBuilder_setDescription")
     fun setDescription(d: String?) {
         description = d
     }
@@ -69,6 +71,7 @@ class TodoBuilder {
         this.date = date.toString()
     }
 
+    @JvmName("todoBuilder_setDate")
     fun setDate(date: String?) {
         LocalDate.parse(date) // parsable checking
         this.date = date
@@ -82,6 +85,7 @@ class TodoBuilder {
         this.time = time.toString()
     }
 
+    @JvmName("todoBuilder_setTime")
     fun setTime(time: String?) {
         LocalTime.parse(time)
         this.time = time
@@ -91,10 +95,12 @@ class TodoBuilder {
         this.setTime(LocalTime.of(h, m))
     }
 
+    @JvmName("todoBuilder_setLocation")
     fun setLocation(location: String?) {
         this.location = location
     }
 
+    @JvmName("todoBuilder_setUrl")
     fun setUrl(url: String?) {
         this.url = url
     }
