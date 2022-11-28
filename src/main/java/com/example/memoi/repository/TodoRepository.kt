@@ -22,6 +22,7 @@ class TodoRepository {
 
         todoRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+            /*  todo: fix this
                 // snapshot.value becomes java.util.HashMap
                 val hm = snapshot.value as HashMap<*, String>
                 val res = TodoBuilder(
@@ -29,7 +30,7 @@ class TodoRepository {
                     hm["date"], hm["time"],
                     hm["location"], hm["url"]
                 )
-                todoData.postValue(res.build())
+                todoData.postValue(res.build())*/
             }
 
             override fun onCancelled(error: DatabaseError) {

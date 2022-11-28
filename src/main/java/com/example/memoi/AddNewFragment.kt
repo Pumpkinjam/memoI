@@ -172,10 +172,6 @@ class AddNewFragment : Fragment() {
                         override fun afterTextChanged(s: Editable?) { }
                     })
 
-                    btnOpenMap.setOnClickListener {
-                        //currentFragment.setMap(binding.mapView)
-                    }
-
                 }
             }
         }

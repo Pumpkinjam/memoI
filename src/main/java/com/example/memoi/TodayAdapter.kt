@@ -1,5 +1,6 @@
 package com.example.memoi
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -36,7 +37,7 @@ class TodayAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodayAd
                 else {
                     btnUrlMove.setOnClickListener {
                         val address = todo.url
-                        binding.root.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(address)))
+                        (binding.root.context as Activity).startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(address)))
                     }
                 }
 
