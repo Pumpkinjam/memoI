@@ -1,5 +1,6 @@
 package com.example.memoi
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.memoi.R
 import com.example.memoi.databinding.ListTodoBinding
 import com.example.memoi.todo.Todo
+import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
 
 class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter.Holder>() {
 
@@ -33,6 +36,12 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
                 txtTodoInfoTime.text = todo.time
                 if (todo.url == null) {
                     btnUrlMove.visibility = View.INVISIBLE
+                }
+                else {
+                    btnUrlMove.setOnClickListener {
+                        val address = todo.url
+                        binding.root.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(address)))
+                    }
                 }
 
 
