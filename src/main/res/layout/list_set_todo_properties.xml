@@ -145,46 +145,5 @@
         app:layout_constraintStart_toEndOf="@+id/img_set_time"
         app:layout_constraintTop_toBottomOf="@+id/btn_set_date" />
 
-    <ImageView
-        android:id="@+id/img_set_location"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:clickable="true"
-        android:src="@drawable/location"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_open_map" />
-
-    <Button
-        android:id="@+id/btn_open_map"
-        android:layout_width="320dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/roundedbutton"
-        android:gravity="center_vertical"
-        android:hint="위치가 설정되지 않았습니다."
-        android:paddingHorizontal="5dp"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/img_set_time"
-        app:layout_constraintTop_toBottomOf="@+id/input_url" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/frm_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_open_map" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
