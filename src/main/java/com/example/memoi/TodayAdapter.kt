@@ -1,5 +1,7 @@
 package com.example.memoi
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +32,12 @@ class TodayAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodayAd
 
                 if (todo.url == null) {
                     btnUrlMove.visibility = View.INVISIBLE
+                }
+                else {
+                    btnUrlMove.setOnClickListener {
+                        val address = todo.url
+                        binding.root.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(address)))
+                    }
                 }
 
             }
