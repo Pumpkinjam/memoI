@@ -1,8 +1,12 @@
 package com.example.memoi
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +22,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
 import com.example.memoi.databinding.FragmentMainBinding
+import com.example.memoi.todo.Todo
 import java.time.LocalDateTime
 import java.util.*
 
@@ -48,7 +53,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fragStack = Stack<Fragment>()
-
+        // today todo list중 time 조건에 맞는 todo 가져오기
+        // if .. 반복중 조건에 맞는 todo
+        val todo2:Todo //입력
+        val thisLocalTime: LocalDateTime = LocalDateTime.now()//조건 판별시 필요한 현재 시각
+        //notificate(todo2) //조건애 맞는 todo 넘겨주면 작동
         jumpToFragment(MainFragment())
     }
 
@@ -65,12 +74,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     // todo: make it be able to be used generally
-    fun notificate() {
-        val thisLocalTime: LocalDateTime = LocalDateTime.now()
+    fun notificate(todo: Todo) {
+
         val builder = NotificationCompat.Builder(this, "test_channel")
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle("알림 제목")
-            .setContentText("알림 내용 $thisLocalTime")
+            .setContentTitle("${todo.title}")
+            .setContentText("${todo.description}\n${todo.url} ")
+            .setDefaults(Notification.DEFAULT_VIBRATE)// 알림 진동기능
+            .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.calendar))//알림창 큰 아이콘
+            .setAutoCancel(true)//
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // 오레오 버전 이후에는 알림을 받을 때 채널이 필요
             // gradle에서 SDK 26 이상이 보장되므로 위 조건이 필요하지는 않음. 그래도 놔둡시다.
