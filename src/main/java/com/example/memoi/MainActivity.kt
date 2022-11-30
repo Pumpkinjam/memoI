@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -23,6 +24,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
 import com.example.memoi.databinding.FragmentMainBinding
 import com.example.memoi.todo.Todo
+import com.example.memoi.viewmodel.TodoListViewModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     lateinit var fragStack: Stack<Fragment>
-
+    lateinit var todoListViewModel: TodoListViewModel
     // without pushing to stack
     private fun jumpToFragment(frg: Fragment) {
         supportFragmentManager.beginTransaction().run {
@@ -53,11 +56,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fragStack = Stack<Fragment>()
-        // today todo list중 time 조건에 맞는 todo 가져오기
-        // if .. 반복중 조건에 맞는 todo
-        val todo2:Todo //입력
-        val thisLocalTime: LocalDateTime = LocalDateTime.now()//조건 판별시 필요한 현재 시각
-        //notificate(todo2) //조건애 맞는 todo 넘겨주면 작동
+        todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
+        //var todolist = todoListViewModel.getList()
+        //for(i:Int in 0..todolist.size){
+          //  if(todolist[i].localDate.equals(LocalDate.now())){
+            //    var todo2=todolist[i]
+           //     notificate(todo2)
+           // }
+       // }
         jumpToFragment(MainFragment())
     }
 
@@ -82,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             .setContentText("${todo.description}\n${todo.url} ")
             .setDefaults(Notification.DEFAULT_VIBRATE)// 알림 진동기능
             .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.calendar))//알림창 큰 아이콘
-            .setAutoCancel(true)//
+            //.setAutoCancel(true)// 알람터치시 삭제... 작동 안하는 것으로 보임
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // 오레오 버전 이후에는 알림을 받을 때 채널이 필요
             // gradle에서 SDK 26 이상이 보장되므로 위 조건이 필요하지는 않음. 그래도 놔둡시다.
