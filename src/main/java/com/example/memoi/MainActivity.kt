@@ -57,13 +57,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         fragStack = Stack<Fragment>()
         todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
-        //var todolist = todoListViewModel.getList()
-        //for(i:Int in 0..todolist.size){
-          //  if(todolist[i].localDate.equals(LocalDate.now())){
-            //    var todo2=todolist[i]
-           //     notificate(todo2)
-           // }
-       // }
+        var todolist = todoListViewModel.getList()
+        if(todolist.size!=0){
+        for(i:Int in 0..todolist.size){
+            if(todolist[i].localDate.equals(LocalDate.now())){
+                var todo2=todolist[i]
+                notificate(todo2)
+            }
+        }}
         jumpToFragment(MainFragment())
     }
 
