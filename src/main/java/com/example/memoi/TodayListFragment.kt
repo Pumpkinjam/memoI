@@ -21,7 +21,7 @@ class TodayListFragment : Fragment() {
     val vm: TodoListViewModel by activityViewModels()
     lateinit var todayList: ArrayList<Todo>
 
-    lateinit var binding: FragmentTodayListBinding
+    var binding: FragmentTodayListBinding? = null
     lateinit var parentActivity: Activity
 
     // getting attached activity.
@@ -43,10 +43,10 @@ class TodayListFragment : Fragment() {
             println(t)
         }
 
-        binding.recToday.layoutManager = LinearLayoutManager(parentActivity)
-        binding.recToday.adapter = TodayAdapter(todayList)
+        binding?.recToday?.layoutManager = LinearLayoutManager(parentActivity)
+        binding?.recToday?.adapter = TodayAdapter(todayList)
 
-        return binding.root
+        return binding?.root
     }
 
     override fun onPause() {

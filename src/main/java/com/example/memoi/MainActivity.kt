@@ -3,48 +3,40 @@ package com.example.memoi
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
-import com.example.memoi.databinding.FragmentMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     lateinit var fragStack: Stack<Fragment>
-    lateinit var todoListViewModel: TodoListViewModel
+    val vm : TodoListViewModel by viewModels()
+
     // without pushing to stack
     private fun jumpToFragment(frg: Fragment) {
         supportFragmentManager.beginTransaction().run {
-            replace(binding.frmFragment.id, frg)
+            replace(binding.frgNav.id, frg)
             commit()
         }
         println("jumping to $frg")
     }
 
     fun goToFragment(frg: Fragment) {
-        fragStack.push(binding.frmFragment.getFragment())
+        fragStack.push(binding.frgNav.getFragment())
         jumpToFragment(frg)
     }
 
@@ -56,8 +48,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fragStack = Stack<Fragment>()
-        todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
-        var todolist = todoListViewModel.getList()
+
+        //// testing code... by hjk
+        //todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
+        var todolist = vm.getList()
         if(todolist.size!=0){
         for(i:Int in 0..todolist.size){
             if(todolist[i].localDate.equals(LocalDate.now())){
@@ -65,7 +59,13 @@ class MainActivity : AppCompatActivity() {
                 notificate(todo2)
             }
         }}
-        jumpToFragment(MainFragment())
+        //// until here...
+
+
+        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
+        binding.bottomNav.setupWithNavController(navcon)
+
+        jumpToFragment(MainTodayFragment())
     }
 
     override fun onBackPressed() {
@@ -74,8 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onNavigateUp(): Boolean {
-        val navcon = binding.frmFragment.getFragment<MainFragment>()
-            .binding.frgNav.getFragment<NavHostFragment>().navController
+        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
 
         return navcon.navigateUp() || super.onNavigateUp()
     }
