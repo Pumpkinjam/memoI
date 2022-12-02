@@ -53,46 +53,7 @@ public abstract class Task {
     }
 
 
-    /* formatting to
-     * "{title}, {description}, {time}, {date}, {location}\n"
-     */
-    // TODO: in csv, we can't save character ","...
-    public String toCsvFormat() {
-        String res = "";
-        //res += instanceNum + ", ";
-        res += title + ", ";
-        res += (description == null ? "null" : description) + ", ";
-
-        String strDate = dateToString();
-        res += (strDate.equals("") ? "null" : strDate) + ", ";
-        String strTime = timeToString();
-        res += (strTime.equals("") ? "null" : strTime) + ", ";
-
-        System.out.println(res);
-        return res + "\n";
-    }
-
     // get/set -ters
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }
-
-    // toString() Override
-    @Override
-    public String toString() {
-        return "<Object Task : " + created + ">" +
-                "\nTitle: " + title +
-                "\nDescription: " + description +
-                "\nDate: " + date +
-                "\nTime: " + time;
-    }
-
-    public String dateToString() {
-        if (this.date == null) return "";
-        return this.date;
-    }
-
-    public String timeToString() {
-        if (this.time == null) return "";
-        return this.time;
-    }
 }

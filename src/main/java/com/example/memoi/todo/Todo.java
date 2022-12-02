@@ -1,11 +1,7 @@
 package com.example.memoi.todo;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 import kotlin.jvm.JvmName;
 
 public class Todo extends Task {
@@ -14,35 +10,30 @@ public class Todo extends Task {
     String location;
     String url;
 
-    Todo(String title, String description, String date, String time, String location, String url) {
+    Todo(String title, String description, String date, String time, String url) {
         super(title, description, date, time);
-        this.location = location;
         this.url = url;
     }
 
-    Todo(String title, String description, LocalDate date, LocalTime time, String location, String url) {
+    Todo(String title, String description, LocalDate date, LocalTime time, String url) {
         super(title, description, date, time);
-        this.location = location;
         this.url = url;
     }
 
 
     /* formatting to
-     * "{title}, {description}, {time}, {date}, {location}\n"
+     * "{title}, {description}, {time}, {date}, {url}\n"
      */
-    @Override
     public String toCsvFormat() {
+
         String res = "";
         //res += instanceNum + ", ";
         res += title + ", ";
         res += (description == null ? "null" : description) + ", ";
 
-        String strDate = dateToString();
-        res += (strDate.equals("") ? "null" : strDate) + ", ";
-        String strTime = timeToString();
-        res += (strTime.equals("") ? "null" : strTime) + ", ";
-
-        res += location == null ? "null" : location.toString();
+        res += (date == null ? "null" : date) + ", ";
+        res += (time == null ? "null" : time) + ", ";
+        res += (url == null ? "null" : url);
 
         System.out.println(res);
         return res + "\n";
@@ -102,6 +93,7 @@ public class Todo extends Task {
                 "\nDescription: " + description +
                 "\nDate: " + date +
                 "\nTime: " + time +
-                "\nLocation" + location;
+                "\nUrl" + url +
+                "\n";
     }
 }

@@ -15,22 +15,21 @@ import kotlin.collections.HashMap
 class TodoRepository {
     val database = Firebase.database
 
+    // Do we really need this?
+/*
     fun observeTodo(key: String, todoData: MutableLiveData<Todo>) {
 
         val todoRef = database.getReference("list/$key")
 
-
         todoRef.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-            /*  todo: fix this
-                // snapshot.value becomes java.util.HashMap
-                val hm = snapshot.value as HashMap<*, String>
+                val hm = snapshot.value as Map<String, String>
                 val res = TodoBuilder(
                     hm["title"], hm["description"],
                     hm["date"], hm["time"],
                     hm["location"], hm["url"]
                 )
-                todoData.postValue(res.build())*/
+                todoData.postValue(res.build())
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -38,21 +37,19 @@ class TodoRepository {
             }
         })
     }
-
+*/
 
     fun postTodo(key: String, newTodo: Todo) {
         val todoRef = database.getReference("list/$key")
-        //val csvRef = database.getReference("list/$key")
+
         try {
             todoRef.setValue(newTodo)
         }
         catch (e: InvocationTargetException) {
             e.targetException.printStackTrace()
-            return;
         }
         catch (e1: DatabaseException) {
             e1.printStackTrace()
-            return;
         }
     }
 
