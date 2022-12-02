@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoi.repository.TodoRepository
 import com.example.memoi.todo.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.ArrayList
 
@@ -23,14 +21,16 @@ class TodoListViewModel: ViewModel() {
     }
 
     fun foo() {
+        println("foo called.")
+
         viewModelScope.launch {
-            repository.readList()
+            repository.selectTodo()
         }
     }
 
     fun add(todo: Todo) {
         this._todoList.value?.add(todo)
-        repository.postTodo(todo.created, todo)
+        repository.insertTodo(todo.created, todo)
     }
 
     fun getTodayList(): ArrayList<Todo> {
