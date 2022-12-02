@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         }}
         //// until here...
 
+        vm.foo()
 
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navcon)

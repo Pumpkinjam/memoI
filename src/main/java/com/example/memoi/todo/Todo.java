@@ -7,7 +7,6 @@ import kotlin.jvm.JvmName;
 public class Todo extends Task {
 
     // TODO: find appropriate class for location
-    String location;
     String url;
 
     Todo(String title, String description, String date, String time, String url) {
