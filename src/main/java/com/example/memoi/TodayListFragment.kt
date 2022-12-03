@@ -35,6 +35,7 @@ class TodayListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodayListBinding.inflate(inflater, container, false)
+        while (!vm.isReady);
         todayList = vm.getTodayList()
 
         println("Today is on view.")

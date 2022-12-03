@@ -19,11 +19,9 @@ class TodoListViewModel: ViewModel() {
     var isReady = false
 
     init {
-        viewModelScope.launch {
-            _todoList.value = repository.selectTodo()
-            println("TodoListViewModel : todoList loading complete.")
-            isReady = true
-        }
+        _todoList.value = repository.selectTodo()
+        println("TodoListViewModel : todoList loading complete.")
+        isReady = true
     }
 
     fun add(todo: Todo) {

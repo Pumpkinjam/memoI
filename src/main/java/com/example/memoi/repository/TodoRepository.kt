@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException
 class TodoRepository {
     val database = Firebase.firestore
 
-    suspend fun selectTodo(): ArrayList<Todo> {
+    fun selectTodo(): ArrayList<Todo> {
 
         val res = ArrayList<Todo>()
 
@@ -30,7 +30,13 @@ class TodoRepository {
                     val date = tmp["date"] as String
                     val time = tmp["time"] as String
                     val url = tmp["url"] as String
-                    val created = tmp["created"] as String
+                    var created = tmp["created"] as String
+
+                    // LocalDateTime must be basically formatted in "yyyy-MM-ddThh-DD-ss"
+                    // a line of code below is for taking format of "yy-MM-ddThh-DD-ss"
+                    // this case shouldn't be happened... but just in case.
+                    // hence, this application won't work in 22nd century. XD
+                    if (created[8] == 'T') created = "20$created"
 
                     res.add(
                         TodoBuilder(
