@@ -1,3 +1,4 @@
+/*
 package com.example.memoi
 
 import android.app.Activity
@@ -44,4 +45,4 @@ class TodayAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodayAd
             }
         }
     }
-}
+}*/

@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -17,14 +18,15 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,12 +37,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // wait for loading
-        while (!vm.isReady);
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fragStack = Stack<Fragment>()
+
 
         //절전모드예외 앱으로 해재하는 권한 얻는 코드() -> 없다면 절전모드로 인한 1분마다의 체크 불가.
         val pm:PowerManager = getApplicationContext().getSystemService(POWER_SERVICE) as PowerManager
@@ -55,9 +55,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-        //// testing code... by hjk
-        //todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
         var todolist = vm.getList()
         if(todolist.size!=0){
             //todolist 시간순 정리
@@ -83,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        //// until here...
 
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navcon)
@@ -104,7 +100,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // without pushing to stack
-    private fun jumpToFragment(frg: Fragment) {
+    fun jumpToFragment(frg: Fragment) {
         supportFragmentManager.beginTransaction().run {
             replace(binding.frgNav.id, frg)
             commit()
@@ -118,6 +114,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun exitFragment() = jumpToFragment(fragStack.pop())
+
+    fun hideTray() {
+        binding.bottomNav.visibility = View.INVISIBLE
+    }
+
+    fun showTray() {
+        binding.bottomNav.visibility = View.VISIBLE
+    }
 
     // todo: make it be able to be used generally
     fun notificate(todo: Todo) {

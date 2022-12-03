@@ -1,20 +1,17 @@
 package com.example.memoi.repository
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.example.memoi.todo.Todo
 import com.example.memoi.todo.TodoBuilder
-import com.google.firebase.firestore.QuerySnapshot
+import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.*
 //import retrofit2.*
 //import retrofit2.http.GET
-import java.lang.reflect.InvocationTargetException
 
 class TodoRepository {
     val database = Firebase.firestore
 
-    suspend fun selectTodo(): ArrayList<Todo> {
+    fun selectTodo(vm: TodoListViewModel): ArrayList<Todo> {
 
         val res = ArrayList<Todo>()
 
@@ -30,7 +27,13 @@ class TodoRepository {
                     val date = tmp["date"] as String
                     val time = tmp["time"] as String
                     val url = tmp["url"] as String
-                    val created = tmp["created"] as String
+                    var created = tmp["created"] as String
+
+                    // LocalDateTime must be basically formatted in "yyyy-MM-ddThh-DD-ss"
+                    // a line of code below is for taking format of "yy-MM-ddThh-DD-ss"
+                    // this case shouldn't be happened... but just in case.
+                    // hence, this application won't work in 22nd century. XD
+                    if (created[8] == 'T') created = "20$created"
 
                     res.add(
                         TodoBuilder(
@@ -48,6 +51,8 @@ class TodoRepository {
                     println("${todo.id} : ${todo.data}")
                 }
                 */
+
+                vm.isReady = true
             }
             .addOnFailureListener { e ->
                 System.err.println("/////////////\ntodo loading failed.\n/////////////")

@@ -10,11 +10,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.memoi.databinding.FragmentTodayListBinding
-import com.example.memoi.todo.Task
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
-import java.time.LocalDate
 import java.util.ArrayList
+import kotlin.concurrent.thread
 
 class TodayListFragment : Fragment() {
 
@@ -37,21 +36,33 @@ class TodayListFragment : Fragment() {
         binding = FragmentTodayListBinding.inflate(inflater, container, false)
         todayList = vm.getTodayList()
 
-        println("Today is on view.")
-        // debugging: for check
-        for (t in todayList) {
-            println(t)
-        }
-
         binding?.recToday?.layoutManager = LinearLayoutManager(parentActivity)
-        binding?.recToday?.adapter = TodayAdapter(todayList)
+        binding?.recToday?.adapter = TodoAdapter(todayList)
 
         return binding?.root
     }
 
-    override fun onPause() {
-        //todo: make mvvm work correctly
-        super.onPause()
+    override fun onResume() {
+        super.onResume()
+
+        thread(start=true) {
+            if (!vm.isReady) {
+                while (!vm.isReady);
+                //setRecyclerView()
+
+                todayList = vm.getTodayList()
+
+                activity?.runOnUiThread {
+                    binding?.recToday?.layoutManager = LinearLayoutManager(parentActivity)
+                    binding?.recToday?.adapter = TodoAdapter(todayList)
+                }
+                // debugging: for check
+                for (t in todayList) {
+                    println(t)
+                }
+            }
+        }
     }
+
 
 }

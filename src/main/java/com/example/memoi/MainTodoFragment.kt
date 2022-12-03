@@ -28,6 +28,7 @@ class MainTodoFragment : Fragment() {
             (activity as MainActivity).goToFragment(AddNewFragment())
         }
 
+        (activity as MainActivity).showTray()
 
         return binding?.root
     }
