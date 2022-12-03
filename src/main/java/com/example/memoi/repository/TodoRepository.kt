@@ -1,20 +1,17 @@
 package com.example.memoi.repository
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.example.memoi.todo.Todo
 import com.example.memoi.todo.TodoBuilder
-import com.google.firebase.firestore.QuerySnapshot
+import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.*
 //import retrofit2.*
 //import retrofit2.http.GET
-import java.lang.reflect.InvocationTargetException
 
 class TodoRepository {
     val database = Firebase.firestore
 
-    fun selectTodo(): ArrayList<Todo> {
+    fun selectTodo(vm: TodoListViewModel): ArrayList<Todo> {
 
         val res = ArrayList<Todo>()
 
@@ -54,6 +51,8 @@ class TodoRepository {
                     println("${todo.id} : ${todo.data}")
                 }
                 */
+
+                vm.isReady = true
             }
             .addOnFailureListener { e ->
                 System.err.println("/////////////\ntodo loading failed.\n/////////////")

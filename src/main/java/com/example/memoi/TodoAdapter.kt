@@ -1,5 +1,7 @@
 package com.example.memoi
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -26,9 +28,17 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
 
     class Holder(private val binding: ListTodoBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(todo: Todo) {
+
             with (binding) {
-                
-                imgTodo.setImageResource(if (todo.date == null) R.drawable.clock else R.drawable.calendar);
+
+                /* time not null -> clock
+                 * date not null & time null -> calender
+                 * date null & time null -> check
+                 */
+                val imgsrc = if (todo.time != null) R.drawable.clock else
+                        (if (todo.date == null) R.drawable.check else R.drawable.calendar)
+
+                imgTodo.setImageResource(imgsrc)
 
                 txtTodoInfoTitle.text = todo.title
                 txtTodoInfoDesc.text = todo.description
@@ -46,7 +56,12 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
 
 
                 root.setOnClickListener {
-                    //TODO("can we edit this to-do?")
+                    // todo: hmm...
+                /*
+                    val tmp = AlertDialog.Builder(binding.root.context)
+                    tmp.setTitle("할일 삭제하기")
+                    tmp.setMessage("${todo.title}을(를) 삭제하시겠습니까?")
+                 */
                 }
             }
         }

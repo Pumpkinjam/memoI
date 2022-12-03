@@ -54,10 +54,13 @@ class AddNewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as MainActivity).hideTray()
+
         binding.btnBack.setOnClickListener {
             //vm.setDoSave(false)
             parentActivity.exitFragment()
         }
+
 
         binding.btnConfirm.setOnClickListener {
             println("Confirm button clicked")

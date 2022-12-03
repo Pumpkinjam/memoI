@@ -16,12 +16,11 @@ class TodoListViewModel: ViewModel() {
     private val _todoList = MutableLiveData<ArrayList<Todo>>()
     val todoList : LiveData<ArrayList<Todo>> get() = _todoList
 
+    // will be true, when repository.selectTodo() is done
     var isReady = false
 
     init {
-        _todoList.value = repository.selectTodo()
-        println("TodoListViewModel : todoList loading complete.")
-        isReady = true
+        _todoList.value = repository.selectTodo(this)
     }
 
     fun add(todo: Todo) {
