@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
+        app:backgroundTint="#D9D9D9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
@@ -28,8 +29,13 @@
             android:id="@+id/txt_appName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MemoI"
-            android:textSize="20sp" />
+            android:text="@string/memoI"
+            android:textSize="20sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5px"
+            android:background="#000000" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/frg_todo_list"

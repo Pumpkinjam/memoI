@@ -143,6 +143,7 @@ class AddNewFragment : Fragment() {
                             }
                         var date = DatePickerDialog(parentActivity, datePickerDialog,
                             year, month, day)
+                        date.datePicker.minDate = System.currentTimeMillis()
                         date.show()
                     }
 
