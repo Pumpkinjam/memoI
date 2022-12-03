@@ -3,6 +3,8 @@ package com.example.memoi.repository
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.memoi.todo.Todo
+import com.example.memoi.todo.TodoBuilder
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.*
 //import retrofit2.*
@@ -12,25 +14,52 @@ import java.lang.reflect.InvocationTargetException
 class TodoRepository {
     val database = Firebase.firestore
 
-    suspend fun selectTodo() {
+    suspend fun selectTodo(): ArrayList<Todo> {
+
+        val res = ArrayList<Todo>()
+
         database.collection("/todoList")
             .get()
             .addOnSuccessListener { result ->
-                println("/////////////\nsucceed\n///////////")
-                // todo: return it.
+                println("/////////////\ntodo loading succeed.\n/////////////")
+
                 for (todo in result) {
-                    Log.d(TAG, "${todo.id} : ${todo.data}")
+                    val tmp = todo.data
+                    val title = tmp["title"] as String
+                    val description = tmp["description"] as String
+                    val date = tmp["date"] as String
+                    val time = tmp["time"] as String
+                    val url = tmp["url"] as String
+                    val created = tmp["created"] as String
+
+                    res.add(
+                        TodoBuilder(
+                            title,
+                            if (description == "null") null else description,
+                            if (date == "null") null else date,
+                            if (time == "null") null else time,
+                            if (url == "null") null else url
+                        ).build(created)
+                    )
+
                 }
+                /* for debug...
+                for (todo in result) {
+                    println("${todo.id} : ${todo.data}")
+                }
+                */
             }
             .addOnFailureListener { e ->
-                println("\n\n\n\n\n\nfailed.\n\n\n\n")
+                System.err.println("/////////////\ntodo loading failed.\n/////////////")
                 // better exception handling...?
                 //e.printStackTrace()
                 throw e
             }
+
+        return res
     }
 
-    fun insertTodo(key: String, newTodo: Todo) {
+    fun insertTodo(newTodo: Todo) {
         val obj = with(newTodo) {
             hashMapOf(
                 "created" to created,
@@ -45,10 +74,10 @@ class TodoRepository {
         database.collection("todoList")
             .add(obj)
             .addOnSuccessListener { _ ->
-                println("post succeed")
+                println("/////////////\ninsert succeed\n/////////////")
             }
             .addOnFailureListener { _ ->
-                println("post failed")
+                println("/////////////\ninsert failed\n/////////////")
             }
     }
 

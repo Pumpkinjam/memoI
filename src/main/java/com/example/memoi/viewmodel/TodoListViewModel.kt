@@ -16,21 +16,19 @@ class TodoListViewModel: ViewModel() {
     private val _todoList = MutableLiveData<ArrayList<Todo>>()
     val todoList : LiveData<ArrayList<Todo>> get() = _todoList
 
+    var isReady = false
+
     init {
-        _todoList.value = ArrayList<Todo>()
-    }
-
-    fun foo() {
-        println("foo called.")
-
         viewModelScope.launch {
-            repository.selectTodo()
+            _todoList.value = repository.selectTodo()
+            println("TodoListViewModel : todoList loading complete.")
+            isReady = true
         }
     }
 
     fun add(todo: Todo) {
         this._todoList.value?.add(todo)
-        repository.insertTodo(todo.created, todo)
+        repository.insertTodo(todo)
     }
 
     fun getTodayList(): ArrayList<Todo> {
@@ -52,7 +50,7 @@ class TodoListViewModel: ViewModel() {
         val resList = ArrayList<Todo>()
 
         _todoList.value?.run {
-
+            // deep-copy all instances
             for (todo in this) {
                 resList.add(todo)
             }

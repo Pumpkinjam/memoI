@@ -78,9 +78,6 @@ class AddNewFragment : Fragment() {
         }
     }
 
-    fun setMap(mapView: FragmentContainerView) {}
-
-
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)
         : RecyclerView.Adapter<PropertyListAdapter.Holder>()
     {

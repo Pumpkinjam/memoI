@@ -1,6 +1,7 @@
 package com.example.memoi.todo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import kotlin.jvm.JvmName;
 
@@ -39,6 +40,13 @@ public class Todo extends Task {
     }
 
     // get/set -ters
+
+      // for loading from firestore.
+    public void setCreated(String c) {
+        String tmp = c.replace('_', '.');
+        LocalDateTime.parse(tmp);
+        this.created = tmp;
+    }
     public void setTitle(String t) { this.title = t; }
     public void setDescription(String d) { this.description = d; }
 

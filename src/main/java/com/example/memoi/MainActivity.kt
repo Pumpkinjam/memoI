@@ -26,24 +26,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var fragStack: Stack<Fragment>
     val vm : TodoListViewModel by viewModels()
 
-    // without pushing to stack
-    private fun jumpToFragment(frg: Fragment) {
-        supportFragmentManager.beginTransaction().run {
-            replace(binding.frgNav.id, frg)
-            commit()
-        }
-        println("jumping to $frg")
-    }
-
-    fun goToFragment(frg: Fragment) {
-        fragStack.push(binding.frgNav.getFragment())
-        jumpToFragment(frg)
-    }
-
-    fun exitFragment() = jumpToFragment(fragStack.pop())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // wait for loading
+        while (!vm.isReady);
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -61,8 +48,6 @@ class MainActivity : AppCompatActivity() {
         }}
         //// until here...
 
-        vm.foo()
-
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navcon)
 
@@ -79,6 +64,22 @@ class MainActivity : AppCompatActivity() {
 
         return navcon.navigateUp() || super.onNavigateUp()
     }
+
+    // without pushing to stack
+    private fun jumpToFragment(frg: Fragment) {
+        supportFragmentManager.beginTransaction().run {
+            replace(binding.frgNav.id, frg)
+            commit()
+        }
+        println("jumping to $frg")
+    }
+
+    fun goToFragment(frg: Fragment) {
+        fragStack.push(binding.frgNav.getFragment())
+        jumpToFragment(frg)
+    }
+
+    fun exitFragment() = jumpToFragment(fragStack.pop())
 
     // todo: make it be able to be used generally
     fun notificate(todo: Todo) {

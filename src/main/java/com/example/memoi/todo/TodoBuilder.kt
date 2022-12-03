@@ -104,6 +104,18 @@ class TodoBuilder {
         return Todo(title, description, date, time, url)
     }
 
+    // being used when the data is loaded.
+    @Throws(Exception::class)
+    fun build(created: String): Todo {
+        if (title == null) {
+            throw NullIntegrityException()
+        }
+        val tmp = Todo(title, description, date, time, url)
+        tmp.setCreated(created)
+
+        return tmp
+    }
+
     /* format of
      * "{title}, {description}, {time}, {date}, {url}\n"
      * "___", "___", "yyyy-MM-dd", "HH-mm", "___"
