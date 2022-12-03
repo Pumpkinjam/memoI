@@ -3,72 +3,93 @@ package com.example.memoi
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.os.PowerManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
-import com.example.memoi.databinding.FragmentMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     lateinit var fragStack: Stack<Fragment>
-    lateinit var todoListViewModel: TodoListViewModel
-    // without pushing to stack
-    private fun jumpToFragment(frg: Fragment) {
-        supportFragmentManager.beginTransaction().run {
-            replace(binding.frmFragment.id, frg)
-            commit()
-        }
-        println("jumping to $frg")
-    }
-
-    fun goToFragment(frg: Fragment) {
-        fragStack.push(binding.frmFragment.getFragment())
-        jumpToFragment(frg)
-    }
-
-    fun exitFragment() = jumpToFragment(fragStack.pop())
+    val vm : TodoListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // wait for loading
+        while (!vm.isReady);
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fragStack = Stack<Fragment>()
-        todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
-        var todolist = todoListViewModel.getList()
-        if(todolist.size!=0)
-            for(i:Int in 0..todolist.size){
-                if(todolist[i].localDate.equals(LocalDate.now())){
-                    var todo2=todolist[i]
-                    notificate(todo2)
+
+        //절전모드예외 앱으로 해재하는 권한 얻는 코드() -> 없다면 절전모드로 인한 1분마다의 체크 불가.
+        val pm:PowerManager = getApplicationContext().getSystemService(POWER_SERVICE) as PowerManager
+        var isWhiteListing = false
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            isWhiteListing = pm.isIgnoringBatteryOptimizations(getApplicationContext().getPackageName())
+        }
+        if (!isWhiteListing) {
+            var intent = Intent()
+            intent.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()))
+            startActivity(intent)
+        }
+
+
+        //// testing code... by hjk
+        //todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
+        var todolist = vm.getList()
+        if(todolist.size!=0){
+            //todolist 시간순 정리
+            for(i:Int in 0 .. (todolist.size-1)){
+                for(j:Int in i+1 .. todolist.size){
+                    if(todolist[i].localDate.year*365*24*60+todolist[i].localDate.dayOfYear*24*60+todolist[i].localTime.hour*60+todolist[i].localTime.minute
+                        >todolist[j].localDate.year*365*24*60+todolist[j].localDate.dayOfYear*24*60+todolist[j].localTime.hour*60+todolist[j].localTime.minute ){
+                        var tmp =todolist[i]
+                        todolist[i]=todolist[j]
+                        todolist[j]=tmp
+                    }
                 }
             }
-
+            for(i:Int in 0..todolist.size){
+                if(todolist[i].localDate.equals(LocalDate.now())){
+                    //임시로 while 작성, 1분마다 체크 or 가까운 알람과의 시간차 구하고 해간 시간 뒤 실행 필요
+                    //while(true){
+                        if(todolist[i].localTime.equals(LocalTime.now())){
+                            var todo2=todolist[i]
+                            notificate(todo2)
+                        }
+                    //}
+                }
+            }
         }
-        jumpToFragment(MainFragment())
+        //// until here...
+
+        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
+        binding.bottomNav.setupWithNavController(navcon)
+
+        jumpToFragment(MainTodayFragment())
+
     }
 
     override fun onBackPressed() {
@@ -77,11 +98,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onNavigateUp(): Boolean {
-        val navcon = binding.frmFragment.getFragment<MainFragment>()
-            .binding.frgNav.getFragment<NavHostFragment>().navController
+        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
 
         return navcon.navigateUp() || super.onNavigateUp()
     }
+
+    // without pushing to stack
+    private fun jumpToFragment(frg: Fragment) {
+        supportFragmentManager.beginTransaction().run {
+            replace(binding.frgNav.id, frg)
+            commit()
+        }
+        println("jumping to $frg")
+    }
+
+    fun goToFragment(frg: Fragment) {
+        fragStack.push(binding.frgNav.getFragment())
+        jumpToFragment(frg)
+    }
+
+    fun exitFragment() = jumpToFragment(fragStack.pop())
 
     // todo: make it be able to be used generally
     fun notificate(todo: Todo) {

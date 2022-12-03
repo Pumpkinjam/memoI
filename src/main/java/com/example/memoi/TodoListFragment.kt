@@ -20,7 +20,7 @@ class TodoListFragment : Fragment() {
     val vm: TodoListViewModel by activityViewModels()
     lateinit var todoList: ArrayList<Todo>
 
-    lateinit var binding: FragmentTodoListBinding
+    var binding: FragmentTodoListBinding? = null
     lateinit var parentActivity: Activity
 
     // getting attached activity.
@@ -42,11 +42,11 @@ class TodoListFragment : Fragment() {
             println(t)
         }
 
-        binding.recTodo.layoutManager = LinearLayoutManager(parentActivity)
+        binding?.recTodo?.layoutManager = LinearLayoutManager(parentActivity)
         // or... binding.recTodo.layoutManager = LinearLayoutManager(activity)
-        binding.recTodo.adapter = TodoAdapter(todoList)
+        binding?.recTodo?.adapter = TodoAdapter(todoList)
 
-        return binding.root
+        return binding?.root
     }
 
 }

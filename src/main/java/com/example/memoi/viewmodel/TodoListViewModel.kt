@@ -1,9 +1,12 @@
 package com.example.memoi.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.memoi.repository.TodoRepository
 import com.example.memoi.todo.*
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.ArrayList
 
@@ -11,16 +14,21 @@ class TodoListViewModel: ViewModel() {
     private val repository = TodoRepository()
 
     private val _todoList = MutableLiveData<ArrayList<Todo>>()
-    val todoList : MutableLiveData<ArrayList<Todo>> get() = _todoList
+    val todoList : LiveData<ArrayList<Todo>> get() = _todoList
+
+    var isReady = false
 
     init {
-        _todoList.value = ArrayList<Todo>()
+        viewModelScope.launch {
+            _todoList.value = repository.selectTodo()
+            println("TodoListViewModel : todoList loading complete.")
+            isReady = true
+        }
     }
 
     fun add(todo: Todo) {
         this._todoList.value?.add(todo)
-        repository.postTodo(todo.created, todo)
-        repository.observeTodo(todo.created, MutableLiveData(this._todoList.value?.last()) )
+        repository.insertTodo(todo)
     }
 
     fun getTodayList(): ArrayList<Todo> {
@@ -42,7 +50,7 @@ class TodoListViewModel: ViewModel() {
         val resList = ArrayList<Todo>()
 
         _todoList.value?.run {
-
+            // deep-copy all instances
             for (todo in this) {
                 resList.add(todo)
             }

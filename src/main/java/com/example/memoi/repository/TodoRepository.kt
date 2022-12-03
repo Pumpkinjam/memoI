@@ -1,63 +1,88 @@
 package com.example.memoi.repository
 
-import androidx.lifecycle.MutableLiveData
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.example.memoi.todo.Todo
 import com.example.memoi.todo.TodoBuilder
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseException
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.*
+//import retrofit2.*
+//import retrofit2.http.GET
 import java.lang.reflect.InvocationTargetException
-import kotlin.collections.HashMap
 
 class TodoRepository {
-    val database = Firebase.database
+    val database = Firebase.firestore
 
-    fun observeTodo(key: String, todoData: MutableLiveData<Todo>) {
+    suspend fun selectTodo(): ArrayList<Todo> {
 
-        val todoRef = database.getReference("list/$key")
+        val res = ArrayList<Todo>()
 
+        database.collection("/todoList")
+            .get()
+            .addOnSuccessListener { result ->
+                println("/////////////\ntodo loading succeed.\n/////////////")
 
-        todoRef.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-            /*  todo: fix this
-                // snapshot.value becomes java.util.HashMap
-                val hm = snapshot.value as HashMap<*, String>
-                val res = TodoBuilder(
-                    hm["title"], hm["description"],
-                    hm["date"], hm["time"],
-                    hm["location"], hm["url"]
-                )
-                todoData.postValue(res.build())*/
+                for (todo in result) {
+                    val tmp = todo.data
+                    val title = tmp["title"] as String
+                    val description = tmp["description"] as String
+                    val date = tmp["date"] as String
+                    val time = tmp["time"] as String
+                    val url = tmp["url"] as String
+                    val created = tmp["created"] as String
+
+                    res.add(
+                        TodoBuilder(
+                            title,
+                            if (description == "null") null else description,
+                            if (date == "null") null else date,
+                            if (time == "null") null else time,
+                            if (url == "null") null else url
+                        ).build(created)
+                    )
+
+                }
+                /* for debug...
+                for (todo in result) {
+                    println("${todo.id} : ${todo.data}")
+                }
+                */
+            }
+            .addOnFailureListener { e ->
+                System.err.println("/////////////\ntodo loading failed.\n/////////////")
+                // better exception handling...?
+                //e.printStackTrace()
+                throw e
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                println("Failed to get value")
-            }
-        })
+        return res
     }
 
+    fun insertTodo(newTodo: Todo) {
+        val obj = with(newTodo) {
+            hashMapOf(
+                "created" to created,
+                "title" to title,
+                "description" to (description ?: "null"),
+                "date" to (date ?: "null"),
+                "time" to (time ?: "null"),
+                "url" to (url ?: "null")
+            )
+        }
 
-    fun postTodo(key: String, newTodo: Todo) {
-        val todoRef = database.getReference("list/$key")
-        //val csvRef = database.getReference("list/$key")
-        try {
-            todoRef.setValue(newTodo)
-        }
-        catch (e: InvocationTargetException) {
-            e.targetException.printStackTrace()
-            return;
-        }
-        catch (e1: DatabaseException) {
-            e1.printStackTrace()
-            return;
-        }
+        database.collection("todoList")
+            .add(obj)
+            .addOnSuccessListener { _ ->
+                println("/////////////\ninsert succeed\n/////////////")
+            }
+            .addOnFailureListener { _ ->
+                println("/////////////\ninsert failed\n/////////////")
+            }
     }
 
     fun removeTodo(key: String) {
-        database.getReference("list/$key").removeValue()
+
     }
 
 }

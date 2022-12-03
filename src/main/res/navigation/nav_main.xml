@@ -3,18 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/todayListFragment">
-
+    app:startDestination="@id/mainTodayFragment">
     <fragment
-        android:id="@+id/todayListFragment"
-        android:name="com.example.memoi.TodayListFragment"
-        android:label="TodayListFragment"
-        tools:layout="@layout/fragment_today_list"/>
-
+        android:id="@+id/mainTodayFragment"
+        android:name="com.example.memoi.MainTodayFragment"
+        android:label="fragment_main_todo"
+        tools:layout="@layout/fragment_main_today" >
+        <action
+            android:id="@+id/action_mainTodayFragment_to_mainTodoFragment"
+            app:destination="@id/mainTodoFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/todoListFragment"
-        android:name="com.example.memoi.TodoListFragment"
-        android:label="fragment_todo_list"
-        tools:layout="@layout/fragment_todo_list" />
-
+        android:id="@+id/mainTodoFragment"
+        android:name="com.example.memoi.MainTodoFragment"
+        android:label="MainTodoFragment"
+        tools:layout="@layout/fragment_main_todo" >
+        <action
+            android:id="@+id/action_mainTodoFragment_to_mainTodayFragment"
+            app:destination="@id/mainTodayFragment" />
+    </fragment>
 </navigation>

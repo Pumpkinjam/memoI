@@ -5,13 +5,14 @@ import com.example.memoi.todo.Task.NullIntegrityException
 import java.lang.Exception
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TodoBuilder {
     var title: String?
     var description: String?
     var date: String?
     var time: String?
-    var location: String?
     var url: String?
 
     constructor() {
@@ -19,7 +20,6 @@ class TodoBuilder {
         description = null
         date = null
         time = null
-        location = null
         url = null
     }
 
@@ -28,14 +28,12 @@ class TodoBuilder {
         description: String?,
         date: LocalDate,
         time: LocalTime,
-        location: String?,
         url: String?
     ) {
         this.title = title
         this.description = description
         this.date = date.toString()
         this.time = time.toString()
-        this.location = location
         this.url = url
     }
 
@@ -44,7 +42,6 @@ class TodoBuilder {
         description: String?,
         date: String?,
         time: String?,
-        location: String?,
         url: String?
     ) {
         if (date != null) LocalDate.parse(date)
@@ -53,7 +50,6 @@ class TodoBuilder {
         this.description = description
         this.date = date
         this.time = time
-        this.location = location
         this.url = url
     }
 
@@ -95,11 +91,6 @@ class TodoBuilder {
         this.setTime(LocalTime.of(h, m))
     }
 
-    @JvmName("todoBuilder_setLocation")
-    fun setLocation(location: String?) {
-        this.location = location
-    }
-
     @JvmName("todoBuilder_setUrl")
     fun setUrl(url: String?) {
         this.url = url
@@ -110,38 +101,56 @@ class TodoBuilder {
         if (title == null) {
             throw NullIntegrityException()
         }
-        return Todo(title, description, date, time, location, url)
-    } /* format of
-     * "{title}, {description}, {time}, {date}, {location}\n"
-     * "___", "___", "yyyy-MM-dd", "HH-mm", ???
+        return Todo(title, description, date, time, url)
+    }
+
+    // being used when the data is loaded.
+    @Throws(Exception::class)
+    fun build(created: String): Todo {
+        if (title == null) {
+            throw NullIntegrityException()
+        }
+        val tmp = Todo(title, description, date, time, url)
+        tmp.setCreated(created)
+
+        return tmp
+    }
+
+    /* format of
+     * "{title}, {description}, {time}, {date}, {url}\n"
+     * "___", "___", "yyyy-MM-dd", "HH-mm", "___"
      * all values has "null" if null
      */
-    /*
-    public static TodoBuilder of(String csv) {
-        StringTokenizer st = new StringTokenizer(csv, ", ");
-        //System.out.println(st.countTokens());
-        ArrayList<String> tokens = new ArrayList<>();
-        while (st.hasMoreTokens()) tokens.add(st.nextToken());
-        //System.out.println(tokens.size());
-        try {
-            String title = tokens.get(0);
-            String desc = tokens.get(1); if (desc.equals("null")) desc = null;
-            String date = tokens.get(2); if (date.equals("null")) date = null;
-            String time = tokens.get(3); if (time.equals("null")) time = null;
-            // todo: loc is always null
-            // when the type of location decided, please change here
-            String loc = tokens.get(4); if (loc.equals("null")) loc = null;
+    companion object {
+        fun of(csv: String): TodoBuilder {
+            val st = StringTokenizer(csv, ", ");
+            //System.out.println(st.countTokens());
+            val tokens: ArrayList<String> = ArrayList<String>();
 
-            return new TodoBuilder(title, desc,
-                    date == null ? null : LocalDate.parse(date),
-                    time == null ? null : LocalTime.parse(time),
-                    null);
+            while (st.hasMoreTokens()) tokens.add(st.nextToken());
+            //System.out.println(tokens.size());
+            try {
+                val title = tokens[0];
+
+                var desc: String? = tokens[1];
+                if (desc == "null") desc = null;
+
+                var date: String? = tokens[2];
+                if (date == "null") date = null;
+
+                var time: String? = tokens[3];
+                if (time == "null") time = null;
+
+                var url: String? = tokens[4];
+                if (url == "null") url = null;
+
+                return TodoBuilder(title, desc, date, time, url)
+            } catch (e: IndexOutOfBoundsException) {
+                System.err.println("TodoBuilder.of() failed. returning Error Todo");
+                e.printStackTrace();
+                return TodoBuilder("Error", "Occurred.", null, null, null);
+            }
         }
-        catch (IndexOutOfBoundsException e) {
-            System.err.println("TodoBuilder.of() failed. returning Error Todo");
-            e.printStackTrace();
-            return new TodoBuilder("Error", "Occured.", LocalDate.now(), LocalTime.now());
-        }
-    }
-    */
+    }   // end of companion object
+
 }

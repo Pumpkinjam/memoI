@@ -78,9 +78,6 @@ class AddNewFragment : Fragment() {
         }
     }
 
-    fun setMap(mapView: FragmentContainerView) {}
-
-
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)
         : RecyclerView.Adapter<PropertyListAdapter.Holder>()
     {
@@ -139,11 +136,11 @@ class AddNewFragment : Fragment() {
                         val datePickerDialog =
                             DatePickerDialog.OnDateSetListener { datepicker, year, month, day ->
                                 btnSetDate.text = "$year/${(month + 1)}/$day"
-                                (parentActivity.binding.frmFragment.getFragment() as AddNewFragment)
-                                    .tempTodo.setDate(year, month+1, day)
+                                currentFragment.tempTodo.setDate(year, month+1, day)
                             }
                         var date = DatePickerDialog(parentActivity, datePickerDialog,
                             year, month, day)
+                        date.datePicker.minDate = System.currentTimeMillis()
                         date.show()
                     }
 
@@ -151,8 +148,7 @@ class AddNewFragment : Fragment() {
                         val timePickerDialog =
                             TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                                 btnSetTime.text = "${hour}시 ${minute}분"
-                                (parentActivity.binding.frmFragment.getFragment() as AddNewFragment)
-                                    .tempTodo.setTime(hour, minute)
+                                currentFragment.tempTodo.setTime(hour, minute)
                             }
                         var time = TimePickerDialog(parentActivity, timePickerDialog,
                             hour, minute, false)
