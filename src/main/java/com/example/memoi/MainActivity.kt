@@ -4,13 +4,18 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -19,6 +24,7 @@ import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -36,22 +42,50 @@ class MainActivity : AppCompatActivity() {
         fragStack = Stack<Fragment>()
 
 
-        //// testing code... by hjk
-        //todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
+        //절전모드예외 앱으로 해재하는 권한 얻는 코드() -> 없다면 절전모드로 인한 1분마다의 체크 불가.
+        val pm:PowerManager = getApplicationContext().getSystemService(POWER_SERVICE) as PowerManager
+        var isWhiteListing = false
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            isWhiteListing = pm.isIgnoringBatteryOptimizations(getApplicationContext().getPackageName())
+        }
+        if (!isWhiteListing) {
+            var intent = Intent()
+            intent.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()))
+            startActivity(intent)
+        }
+
         var todolist = vm.getList()
         if(todolist.size!=0){
-        for(i:Int in 0..todolist.size){
-            if(todolist[i].localDate.equals(LocalDate.now())){
-                var todo2=todolist[i]
-                notificate(todo2)
+            //todolist 시간순 정리
+            for(i:Int in 0 .. (todolist.size-1)){
+                for(j:Int in i+1 .. todolist.size){
+                    if(todolist[i].localDate.year*365*24*60+todolist[i].localDate.dayOfYear*24*60+todolist[i].localTime.hour*60+todolist[i].localTime.minute
+                        >todolist[j].localDate.year*365*24*60+todolist[j].localDate.dayOfYear*24*60+todolist[j].localTime.hour*60+todolist[j].localTime.minute ){
+                        var tmp =todolist[i]
+                        todolist[i]=todolist[j]
+                        todolist[j]=tmp
+                    }
+                }
             }
-        }}
-        //// until here...
+            for(i:Int in 0..todolist.size){
+                if(todolist[i].localDate.equals(LocalDate.now())){
+                    //임시로 while 작성, 1분마다 체크 or 가까운 알람과의 시간차 구하고 해간 시간 뒤 실행 필요
+                    //while(true){
+                        if(todolist[i].localTime.equals(LocalTime.now())){
+                            var todo2=todolist[i]
+                            notificate(todo2)
+                        }
+                    //}
+                }
+            }
+        }
 
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navcon)
 
         jumpToFragment(MainTodayFragment())
+
     }
 
     override fun onBackPressed() {
