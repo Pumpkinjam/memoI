@@ -35,7 +35,7 @@ class TodoListViewModel: ViewModel() {
 
             for (todo in this) {
                 // don't get non-today
-                if (todo.date==null || (LocalDate.parse(todo.date)).isEqual(LocalDate.now()))
+                if (todo.date!=null && (LocalDate.parse(todo.date)).isEqual(LocalDate.now()))
                     resList.add(todo)
             }
         }
