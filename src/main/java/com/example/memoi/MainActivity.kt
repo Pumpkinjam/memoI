@@ -12,6 +12,7 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -58,13 +59,15 @@ class MainActivity : AppCompatActivity() {
         fragStack = Stack<Fragment>()
         todoListViewModel=ViewModelProvider(this).get(TodoListViewModel::class.java)
         var todolist = todoListViewModel.getList()
-        if(todolist.size!=0){
-        for(i:Int in 0..todolist.size){
-            if(todolist[i].localDate.equals(LocalDate.now())){
-                var todo2=todolist[i]
-                notificate(todo2)
+        if(todolist.size!=0)
+            for(i:Int in 0..todolist.size){
+                if(todolist[i].localDate.equals(LocalDate.now())){
+                    var todo2=todolist[i]
+                    notificate(todo2)
+                }
             }
-        }}
+
+        }
         jumpToFragment(MainFragment())
     }
 
