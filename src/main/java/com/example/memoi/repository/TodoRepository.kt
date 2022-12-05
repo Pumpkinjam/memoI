@@ -10,13 +10,13 @@ import com.google.firebase.ktx.*
 
 class TodoRepository {
     val database = Firebase.firestore
+    val dbColl = database.collection("/todoList")
 
     fun selectTodo(vm: TodoListViewModel): ArrayList<Todo> {
 
         val res = ArrayList<Todo>()
 
-        database.collection("/todoList")
-            .get()
+        dbColl.get()
             .addOnSuccessListener { result ->
                 println("/////////////\ntodo loading succeed.\n/////////////")
 
@@ -76,7 +76,7 @@ class TodoRepository {
             )
         }
 
-        database.collection("todoList").document("${newTodo.created}")
+        dbColl.document(newTodo.created)
             .set(obj)
             .addOnSuccessListener { _ ->
                 println("/////////////\ninsert succeed\n/////////////")
@@ -87,7 +87,14 @@ class TodoRepository {
     }
 
     fun deleteTodo(todo: Todo) {
-
+        dbColl.document(todo.created)
+            .delete()
+            .addOnSuccessListener { _ ->
+                println("/////////////\ndelete succeed\n/////////////")
+            }
+            .addOnFailureListener { _ ->
+                println("/////////////\ndelete failed\n/////////////")
+            }
     }
 
 }

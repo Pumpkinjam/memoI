@@ -12,6 +12,9 @@ import com.example.memoi.databinding.ListTodoBinding
 import com.example.memoi.todo.Todo
 import android.net.Uri
 import androidx.core.content.ContextCompat.startActivity
+import com.example.memoi.repository.TodoRepository
+import com.example.memoi.viewmodel.TodoListViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter.Holder>() {
 
@@ -54,14 +57,26 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
                     }
                 }
 
-
+                // 할일 클릭 시, 삭제
                 root.setOnClickListener {
-                    // todo: hmm...
-                /*
+
                     val tmp = AlertDialog.Builder(binding.root.context)
                     tmp.setTitle("할일 삭제하기")
-                    tmp.setMessage("${todo.title}을(를) 삭제하시겠습니까?")
-                 */
+                        .setMessage("${todo.title}을(를) 삭제하시겠습니까?")
+                        .setPositiveButton("예",
+                            DialogInterface.OnClickListener { _, _ ->
+                                TodoRepository().deleteTodo(todo)
+                                Snackbar.make(binding.root, "삭제되었습니다.", Snackbar.LENGTH_SHORT)
+                                    .show()
+                        })
+                        .setNegativeButton("아니오",
+                            DialogInterface.OnClickListener { _, _ ->
+                                Snackbar.make(binding.root, "당신의 '${todo.title}'은 살아남았습니다.", Snackbar.LENGTH_SHORT)
+                                    .show()
+                            }
+                        )
+                        .show()
+                    
                 }
             }
         }
