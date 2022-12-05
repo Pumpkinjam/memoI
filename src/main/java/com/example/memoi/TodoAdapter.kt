@@ -61,11 +61,13 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
                 root.setOnClickListener {
 
                     val tmp = AlertDialog.Builder(binding.root.context)
+                    val vm = TodoListViewModel()
                     tmp.setTitle("할일 삭제하기")
                         .setMessage("${todo.title}을(를) 삭제하시겠습니까?")
                         .setPositiveButton("예",
                             DialogInterface.OnClickListener { _, _ ->
                                 TodoRepository().deleteTodo(todo)
+                                vm.update()
                                 Snackbar.make(binding.root, "삭제되었습니다.", Snackbar.LENGTH_SHORT)
                                     .show()
                         })

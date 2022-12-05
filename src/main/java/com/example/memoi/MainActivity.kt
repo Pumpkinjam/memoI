@@ -52,13 +52,10 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
-
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navcon)
 
-        jumpToFragment(MainTodayFragment())
+        //jumpToFragment(MainTodayFragment())
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             checkAlarm()
         }, 10000)
@@ -71,10 +68,10 @@ class MainActivity : AppCompatActivity() {
         else { exitFragment() }
     }
 
-    override fun onNavigateUp(): Boolean {
+    override fun onSupportNavigateUp(): Boolean {
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
 
-        return navcon.navigateUp() || super.onNavigateUp()
+        return navcon.navigateUp() || super.onSupportNavigateUp()
     }
 
     // without pushing to stack

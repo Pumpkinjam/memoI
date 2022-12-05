@@ -20,6 +20,10 @@ class TodoListViewModel: ViewModel() {
     var isReady = false
 
     init {
+        update()
+    }
+
+    fun update() {
         _todoList.value = repository.selectTodo(this)
     }
 
