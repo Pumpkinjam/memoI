@@ -16,6 +16,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
@@ -28,16 +31,35 @@ import java.util.logging.Handler
 
 class MainActivity : AppCompatActivity() {
 
+    enum class FragmentType {
+        MainToday,
+        MainTodo,
+        AddNew
+    }
+
     lateinit var binding: ActivityMainBinding
-    lateinit var fragStack: Stack<Fragment>
     val vm : TodoListViewModel by viewModels()
+
+    lateinit var navcon: NavController
+
+    var currentFragment = FragmentType.MainToday
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        fragStack = Stack<Fragment>()
+
+        binding.btnAddNew.setOnClickListener { view ->
+            val navHostFragment = binding.frgNav.getFragment<NavHostFragment>()
+
+            if (currentFragment == FragmentType.MainToday)
+                navcon.navigate(R.id.action_mainTodayFragment_to_addNewFragment)
+            else
+                navcon.navigate(R.id.action_mainTodoFragment_to_addNewFragment)
+        }
+
 
         //절전모드예외 앱으로 해재하는 권한 얻는 코드() -> 없다면 절전모드로 인한 1분마다의 체크 불가.
         val pm:PowerManager = getApplicationContext().getSystemService(POWER_SERVICE) as PowerManager
@@ -52,8 +74,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
+        resetNavcon()
         binding.bottomNav.setupWithNavController(navcon)
 
         //핸들러를 통한 10초 딜레이 후 실행,viewmodel이 firebase로부터 객체를 로딩완료후 실행가능.
@@ -65,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
+        resetNavcon()
 
         return navcon.navigateUp() || super.onSupportNavigateUp()
     }
@@ -94,12 +115,21 @@ class MainActivity : AppCompatActivity() {
 
     fun exitFragment() = jumpToFragment(fragStack.pop())
 */
-    fun hideTray() {
-        binding.bottomNav.visibility = View.INVISIBLE
+
+    fun resetNavcon() {
+        navcon = binding.frgNav.getFragment<NavHostFragment>().navController
     }
 
-    fun showTray() {
+    // hide bottomNavigation
+    fun hideButtons() {
+        binding.bottomNav.visibility = View.INVISIBLE
+        binding.btnAddNew.visibility = View.INVISIBLE
+    }
+
+    // show bottomNavigation
+    fun showButtons() {
         binding.bottomNav.visibility = View.VISIBLE
+        binding.btnAddNew.visibility = View.VISIBLE
     }
 
     fun checkAlarm(){
@@ -156,4 +186,9 @@ class MainActivity : AppCompatActivity() {
             notificationManager.notify(1002, builder.build())
         }
     }
+
+
+    //companion object {
+
+    //}
 }

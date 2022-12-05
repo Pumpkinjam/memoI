@@ -9,12 +9,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.memoi.databinding.AddNewFragmentBinding
@@ -24,14 +22,13 @@ import com.example.memoi.todo.TodoBuilder
 import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
-import java.time.LocalDate
-import java.time.LocalTime
 import java.util.*
 
 class AddNewFragment : Fragment() {
 
     lateinit var binding: AddNewFragmentBinding
     lateinit var parentActivity: MainActivity
+    lateinit var fragFrom: MainActivity.FragmentType
 
     val vm: TodoListViewModel by activityViewModels()
 
@@ -40,7 +37,9 @@ class AddNewFragment : Fragment() {
     // getting attached activity.
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        parentActivity = context as MainActivity
+        parentActivity = activity as MainActivity
+        fragFrom = parentActivity.currentFragment
+        parentActivity.currentFragment = MainActivity.FragmentType.AddNew
     }
 
     override fun onCreateView(
@@ -58,12 +57,16 @@ class AddNewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).hideTray()
+        (activity as MainActivity).hideButtons()
 
-        binding.btnBack.setOnClickListener (
-            this.toTodo()
-        )
+        binding.btnBack.setOnClickListener {
+            val navHostFragment = parentActivity.binding.frgNav.getFragment<NavHostFragment>()
 
+            if (fragFrom == MainActivity.FragmentType.MainToday)
+                parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodayFragment)
+            else
+                parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodoFragment)
+        }
 
         binding.btnConfirm.setOnClickListener {
             println("Confirm button clicked")
@@ -72,7 +75,7 @@ class AddNewFragment : Fragment() {
                 val newTodo = tempTodo.build()
                 vm.add(newTodo)
 
-                if (newTodo.localDate.equals(LocalDate.now())) this.toToday() else this.toTodo()
+
             }
             catch (e: Task.NullIntegrityException) {
                 Snackbar
@@ -84,14 +87,6 @@ class AddNewFragment : Fragment() {
                 e.printStackTrace()
             }
         }
-    }
-
-    fun toToday(): OnClickListener {
-        return Navigation.createNavigateOnClickListener(R.id.action_addNewFragment_to_mainTodayFragment)
-    }
-
-    fun toTodo(): OnClickListener {
-        return Navigation.createNavigateOnClickListener(R.id.action_addNewFragment_to_mainTodoFragment)
     }
 
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)
