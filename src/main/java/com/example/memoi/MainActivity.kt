@@ -22,6 +22,7 @@ import com.example.memoi.databinding.ActivityMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.logging.Handler
 
@@ -110,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 if(todolist.size!=0){
                     for(i:Int in 0..todolist.size-1){
-                        if(todolist[i].localTime.hour*60+todolist[i].localTime.minute ==LocalTime.now().hour*60+LocalTime.now().minute){
+                        if(todolist[i].localTime.equals(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
                             notificate(todolist[i])
                         }
                     }
