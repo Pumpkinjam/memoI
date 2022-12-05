@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 if(todolist.size!=0){
                     for(i:Int in 0..todolist.size-1){
+                        //LocalTime.now() 의 분 이후의 내용 버림
                         if(todolist[i].localTime.equals(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
                             notificate(todolist[i])
                         }
