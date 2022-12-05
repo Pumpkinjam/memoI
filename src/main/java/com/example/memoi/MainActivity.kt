@@ -1,16 +1,11 @@
 package com.example.memoi
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Looper
-import android.os.PowerManager
+import android.os.*
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,10 +19,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
+
+
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.logging.Handler
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -81,10 +80,24 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setupWithNavController(navcon)
 
         //핸들러를 통한 10초 딜레이 후 실행,viewmodel이 firebase로부터 객체를 로딩완료후 실행가능.
-        android.os.Handler(Looper.getMainLooper()).postDelayed({
-            checkAlarm()
-        }, 10000)
+        Handler(Looper.getMainLooper()).postDelayed({
 
+            //실행시점 기준 미래에 설정된 모든 알람 설정, 아직 기능 온전하지 않음.
+            /*val todolist = vm.getList()
+            for(i in 0 .. todolist.size-1){
+                if(todolist[i].localTime!=null){
+                //.truncatedTo(ChronoUnit.MINUTES)를 통한 분 이후의 값 제거
+                    if(todolist[i].localTime.isAfter(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
+                        setAlarm(todolist[i])
+                    }
+                }
+            }*/
+
+            //알람삭제.. 구현실패
+            //cancelAlarm(checkAlarm())
+            //checkAlarm은 앱 실행시점기준 가장 근미래의 todo를 가져옴
+            setAlarm(checkAlarm()) //임시코드, 가까운 todo 재실행시 잡아줌.
+        }, 10000)
 
     }
 
@@ -134,30 +147,82 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.visibility = View.VISIBLE
         binding.btnAddNew.visibility = View.VISIBLE
     }
+    
+    
+    //알람 울릴떄마다 삭제하고 알람 생성할떄 호출해서 써먹으려하였지만 삭재가 안되여 사용 안할 예정.
+    fun checkAlarm():Todo?{
+        val todolist = vm.getTodayList()
+        var num=1000
+        if(todolist.size!=0){
+            var near = 1000000000
+            for(i:Int in 0..todolist.size-1){
+                //null가능성 체크
+                if(todolist[i].localTime!=null) {
+                    val tmp=(todolist[i].localTime.hour*60+todolist[i].localTime.minute
+                            -(LocalTime.now().hour*60+LocalTime.now().minute))
+                    if(tmp<0)
+                        continue
+                    if (near>tmp) {
+                        near=tmp
+                        num=i
 
-    fun checkAlarm(){
-         //timer를 통한 60초마다 반복 실행.
-        val timer = Timer()
-        var todolist = vm.getTodayList()
-        val timerTask: TimerTask = object : TimerTask() {
-            //반복 실행될 내용
-            override fun run() {
-                if(todolist.size!=0){
-                    for(i:Int in 0..todolist.size-1){
-
-                        // temporary null-exception-handling
-                        if (todolist[i].localTime == null) continue
-
-                        //LocalTime.now() 의 분 이후의 내용 버림
-                        if(todolist[i].localTime.equals(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
-                            notificate(todolist[i])
-                        }
                     }
                 }
             }
+            if(near==1000000000)
+                return null
+            //제대로 된 근미래값 todo return 확인 완료
+            return todolist[num]
         }
-        timer.schedule(timerTask, 0, 60000)// 반복 실행 함수
+        return null
     }
+    
+    //알람 설정
+    fun setAlarm(todoNear: Todo?){
+        if(todoNear!=null) {
+            //System.out.println(todoNear.localTime)
+            //System.out.println(todoNear.title)
+
+            //intent를 통한 todo값 보내주기
+            val intent = Intent(this, AlarmReceiver::class.java)
+            intent.putExtra("title", todoNear.title)
+            intent.putExtra("description",todoNear.description)
+            intent.putExtra("url",todoNear.url)
+
+            //알람시간이 현재 기준으로 얼마만큼 뒤에 있는지 계산
+            val time = (todoNear.localTime.hour*60+todoNear.localTime.minute
+                    -LocalTime.now().hour*60-LocalTime.now().minute)
+
+            //바로 실행하지 않기에 pending, 삭재에 실패하였기에 고려하지 않고 랜덤 사용
+            val pendingIntent = PendingIntent.getBroadcast(
+                this, Random().nextInt(999999999), intent, PendingIntent.FLAG_IMMUTABLE
+            )
+
+            getSystemService(AlarmManager::class.java).setExact(
+                //기기시간 기준으로 실행
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                (SystemClock.elapsedRealtime() + time*60*1000),
+                pendingIntent
+            )
+
+            //cancelAlarm(todoNear)
+        }
+    }
+    /*알람 삭제함수.. 실패
+    fun cancelAlarm(todoNear: Todo?) {
+        if(todoNear!=null) {
+            val intent = Intent(this, AlarmReceiver::class.java)
+            intent.putExtra("title", todoNear.title)
+            intent.putExtra("description",todoNear.description)
+            intent.putExtra("url",todoNear.url)
+            val pendingIntent = PendingIntent.getBroadcast(
+            this,0,intent,PendingIntent.FLAG_IMMUTABLE)
+            getSystemService(AlarmManager::class.java).cancel(pendingIntent)
+        }
+    }*/
+
+
+    /* todo: make it be able to be used generally, 안씀.
 
     fun notificate(todo: Todo) {
 
@@ -187,6 +252,5 @@ class MainActivity : AppCompatActivity() {
             // 알림 표시: 알림의 고유 ID(ex: 1002), 알림 결과
             notificationManager.notify(1002, builder.build())
         }
-    }
-
+    }*/
 }
