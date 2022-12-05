@@ -76,8 +76,8 @@ class TodoRepository {
             )
         }
 
-        database.collection("todoList")
-            .add(obj)
+        database.collection("todoList").document("${newTodo.created}")
+            .set(obj)
             .addOnSuccessListener { _ ->
                 println("/////////////\ninsert succeed\n/////////////")
             }
@@ -86,7 +86,7 @@ class TodoRepository {
             }
     }
 
-    fun removeTodo(key: String) {
+    fun deleteTodo(todo: Todo) {
 
     }
 
