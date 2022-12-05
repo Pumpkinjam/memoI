@@ -11,8 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.memoi.databinding.AddNewFragmentBinding
@@ -22,13 +22,13 @@ import com.example.memoi.todo.TodoBuilder
 import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
-import java.time.LocalTime
 import java.util.*
 
 class AddNewFragment : Fragment() {
 
     lateinit var binding: AddNewFragmentBinding
     lateinit var parentActivity: MainActivity
+    lateinit var fragFrom: MainActivity.FragmentType
 
     val vm: TodoListViewModel by activityViewModels()
 
@@ -37,7 +37,13 @@ class AddNewFragment : Fragment() {
     // getting attached activity.
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        parentActivity = context as MainActivity
+        parentActivity = activity as MainActivity
+
+        // set where is this fragment came from
+        fragFrom = parentActivity.currentFragment
+
+        // set currentFragment to this
+        parentActivity.currentFragment = MainActivity.FragmentType.AddNew
     }
 
     override fun onCreateView(
@@ -55,20 +61,25 @@ class AddNewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).hideTray()
+        // don't show the bottomNav & addNewButton
+        (activity as MainActivity).hideButtons()
 
         binding.btnBack.setOnClickListener {
-            //vm.setDoSave(false)
-            parentActivity.exitFragment()
-        }
+            val navHostFragment = parentActivity.binding.frgNav.getFragment<NavHostFragment>()
 
+            // choose where to go back to.
+            if (fragFrom == MainActivity.FragmentType.MainToday)
+                parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodayFragment)
+            else
+                parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodoFragment)
+        }
 
         binding.btnConfirm.setOnClickListener {
             println("Confirm button clicked")
-            //vm.setDoSave(true)
+
             try {
-                vm.add(tempTodo.build())
-                parentActivity.exitFragment()
+                val newTodo = tempTodo.build()
+                vm.add(newTodo)
             }
             catch (e: Task.NullIntegrityException) {
                 Snackbar
@@ -80,12 +91,13 @@ class AddNewFragment : Fragment() {
                 e.printStackTrace()
             }
         }
-    }
 
+    } // end of onViewCreated
+
+    // adapter for new Todo_s property setting UI
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)
         : RecyclerView.Adapter<PropertyListAdapter.Holder>()
     {
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyListAdapter.Holder {
             val binding = ListSetTodoPropertiesBinding.inflate(LayoutInflater.from(parent.context))
             return Holder(binding, parentActivity as MainActivity, currentFragment)
@@ -93,7 +105,7 @@ class AddNewFragment : Fragment() {
         override fun onBindViewHolder(holder: PropertyListAdapter.Holder, position: Int) {
             holder.bind()
         }
-        override fun getItemCount(): Int = 1
+        override fun getItemCount(): Int = 1    // always 1.
 
         class Holder(private val binding: ListSetTodoPropertiesBinding,
                      val parentActivity: MainActivity, val currentFragment: AddNewFragment)

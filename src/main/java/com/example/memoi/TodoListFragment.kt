@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.memoi.TodoAdapter
+import com.example.memoi.databinding.FragmentTodayListBinding
 import com.example.memoi.databinding.FragmentTodoListBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
 import java.util.ArrayList
+import kotlin.concurrent.thread
 
 class TodoListFragment : Fragment() {
 
@@ -26,7 +28,7 @@ class TodoListFragment : Fragment() {
     // getting attached activity.
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        parentActivity = context as Activity
+        parentActivity = activity as MainActivity
     }
 
     override fun onCreateView(
@@ -34,19 +36,34 @@ class TodoListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTodoListBinding.inflate(inflater, container, false)
-        todoList = vm.getList()
-
-        println("Todo is on view.")
-        // debugging: for check
-        for (t in todoList) {
-            println(t)
-        }
+        todoList = vm.getTodayList()
 
         binding?.recTodo?.layoutManager = LinearLayoutManager(parentActivity)
-        // or... binding.recTodo.layoutManager = LinearLayoutManager(activity)
         binding?.recTodo?.adapter = TodoAdapter(todoList)
 
         return binding?.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        thread(start=true) {
+
+            while (!vm.isReady);
+            //setRecyclerView()
+
+            todoList = vm.getList()
+
+            activity?.runOnUiThread {
+                binding?.recTodo?.layoutManager = LinearLayoutManager(parentActivity)
+                binding?.recTodo?.adapter = TodoAdapter(todoList)
+            }
+            // debugging: for check
+            for (t in todoList) {
+                println(t)
+            }
+        }
+
     }
 
 }

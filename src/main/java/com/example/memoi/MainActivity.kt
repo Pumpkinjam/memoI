@@ -11,6 +11,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
@@ -27,16 +30,38 @@ import java.util.logging.Handler
 
 class MainActivity : AppCompatActivity() {
 
+    enum class FragmentType {
+        MainToday,
+        MainTodo,
+        AddNew
+    }
+
     lateinit var binding: ActivityMainBinding
-    lateinit var fragStack: Stack<Fragment>
     val vm : TodoListViewModel by viewModels()
+
+    lateinit var navcon: NavController
+
+    // which fragment (in frgNav) is being shown to user?
+    // has type of FragmentType (enum)
+    var currentFragment = FragmentType.MainToday
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        fragStack = Stack<Fragment>()
+
+        binding.btnAddNew.setOnClickListener { view ->
+            val navHostFragment = binding.frgNav.getFragment<NavHostFragment>()
+
+            // check the current fragment, and then choose action
+            if (currentFragment == FragmentType.MainToday)
+                navcon.navigate(R.id.action_mainTodayFragment_to_addNewFragment)
+            else
+                navcon.navigate(R.id.action_mainTodoFragment_to_addNewFragment)
+        }
+
 
         //절전모드예외 앱으로 해재하는 권한 얻는 코드() -> 없다면 절전모드로 인한 1분마다의 체크 불가.
         val pm:PowerManager = getApplicationContext().getSystemService(POWER_SERVICE) as PowerManager
@@ -51,12 +76,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-
-        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
+        resetNavcon()
         binding.bottomNav.setupWithNavController(navcon)
-
-        jumpToFragment(MainTodayFragment())
 
         //핸들러를 통한 10초 딜레이 후 실행,viewmodel이 firebase로부터 객체를 로딩완료후 실행가능.
         Handler(Looper.getMainLooper()).postDelayed({
@@ -80,16 +101,19 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        resetNavcon()
+
+        return navcon.navigateUp() || super.onSupportNavigateUp()
+    }
+
+/*
+
     override fun onBackPressed() {
         if (fragStack.empty()) {super.onBackPressed()}
         else { exitFragment() }
     }
 
-    override fun onNavigateUp(): Boolean {
-        val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
-
-        return navcon.navigateUp() || super.onNavigateUp()
-    }
 
     // without pushing to stack
     fun jumpToFragment(frg: Fragment) {
@@ -106,14 +130,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun exitFragment() = jumpToFragment(fragStack.pop())
+*/
 
-    fun hideTray() {
+    fun resetNavcon() {
+        navcon = binding.frgNav.getFragment<NavHostFragment>().navController
+    }
+
+    // hide bottomNavigation & addNewButton
+    fun hideButtons() {
         binding.bottomNav.visibility = View.INVISIBLE
+        binding.btnAddNew.visibility = View.INVISIBLE
     }
 
-    fun showTray() {
+    // show bottomNavigation &...
+    fun showButtons() {
         binding.bottomNav.visibility = View.VISIBLE
+        binding.btnAddNew.visibility = View.VISIBLE
     }
+    
+    
     //알람 울릴떄마다 삭제하고 알람 생성할떄 호출해서 써먹으려하였지만 삭재가 안되여 사용 안할 예정.
     fun checkAlarm():Todo?{
         val todolist = vm.getTodayList()
@@ -130,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                     if (near>tmp) {
                         near=tmp
                         num=i
+
                     }
                 }
             }
@@ -140,6 +176,7 @@ class MainActivity : AppCompatActivity() {
         }
         return null
     }
+    
     //알람 설정
     fun setAlarm(todoNear: Todo?){
         if(todoNear!=null) {
@@ -185,9 +222,8 @@ class MainActivity : AppCompatActivity() {
     }*/
 
 
-
-
     /* todo: make it be able to be used generally, 안씀.
+
     fun notificate(todo: Todo) {
 
         val builder = NotificationCompat.Builder(this, "test_channel")

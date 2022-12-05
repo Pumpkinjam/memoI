@@ -26,7 +26,7 @@ class TodayListFragment : Fragment() {
     // getting attached activity.
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        parentActivity = context as Activity
+        parentActivity = activity as MainActivity
     }
 
     override fun onCreateView(
@@ -46,22 +46,22 @@ class TodayListFragment : Fragment() {
         super.onResume()
 
         thread(start=true) {
-            if (!vm.isReady) {
-                while (!vm.isReady);
-                //setRecyclerView()
 
-                todayList = vm.getTodayList()
+            while (!vm.isReady);
+            //setRecyclerView()
 
-                activity?.runOnUiThread {
-                    binding?.recToday?.layoutManager = LinearLayoutManager(parentActivity)
-                    binding?.recToday?.adapter = TodoAdapter(todayList)
-                }
-                // debugging: for check
-                for (t in todayList) {
-                    println(t)
-                }
+            todayList = vm.getTodayList()
+
+            activity?.runOnUiThread {
+                binding?.recToday?.layoutManager = LinearLayoutManager(parentActivity)
+                binding?.recToday?.adapter = TodoAdapter(todayList)
+            }
+            // debugging: for check
+            for (t in todayList) {
+                println(t)
             }
         }
+
     }
 
 

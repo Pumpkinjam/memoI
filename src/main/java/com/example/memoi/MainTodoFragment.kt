@@ -1,6 +1,5 @@
 package com.example.memoi
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,19 +15,16 @@ class MainTodoFragment : Fragment() {
 
     var binding: FragmentMainTodoBinding? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as MainActivity)
+            .currentFragment = MainActivity.FragmentType.MainTodo
+        //println((activity as MainActivity).currentFragment)
+
         binding = FragmentMainTodoBinding.inflate(inflater, container, false);
-
-        binding?.btnAddNew?.setOnClickListener {
-            // todo : save all lists
-            (activity as MainActivity).goToFragment(AddNewFragment())
-        }
-
-        (activity as MainActivity).showTray()
+        (activity as MainActivity).showButtons()
 
         return binding?.root
     }
