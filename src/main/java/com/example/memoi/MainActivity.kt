@@ -53,13 +53,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
-
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navcon)
 
-        jumpToFragment(MainTodayFragment())
         //핸들러를 통한 10초 딜레이 후 실행,viewmodel이 firebase로부터 객체를 로딩완료후 실행가능.
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             checkAlarm()
@@ -73,10 +69,10 @@ class MainActivity : AppCompatActivity() {
         else { exitFragment() }
     }
 
-    override fun onNavigateUp(): Boolean {
+    override fun onSupportNavigateUp(): Boolean {
         val navcon = binding.frgNav.getFragment<NavHostFragment>().navController
 
-        return navcon.navigateUp() || super.onNavigateUp()
+        return navcon.navigateUp() || super.onSupportNavigateUp()
     }
 
     // without pushing to stack
