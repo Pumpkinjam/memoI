@@ -38,7 +38,11 @@ class AddNewFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         parentActivity = activity as MainActivity
+
+        // set where is this fragment came from
         fragFrom = parentActivity.currentFragment
+
+        // set currentFragment to this
         parentActivity.currentFragment = MainActivity.FragmentType.AddNew
     }
 
@@ -57,11 +61,13 @@ class AddNewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // don't show the bottomNav & addNewButton
         (activity as MainActivity).hideButtons()
 
         binding.btnBack.setOnClickListener {
             val navHostFragment = parentActivity.binding.frgNav.getFragment<NavHostFragment>()
 
+            // choose where to go back to.
             if (fragFrom == MainActivity.FragmentType.MainToday)
                 parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodayFragment)
             else
@@ -70,12 +76,10 @@ class AddNewFragment : Fragment() {
 
         binding.btnConfirm.setOnClickListener {
             println("Confirm button clicked")
-            //vm.setDoSave(true)
+
             try {
                 val newTodo = tempTodo.build()
                 vm.add(newTodo)
-
-
             }
             catch (e: Task.NullIntegrityException) {
                 Snackbar
@@ -87,12 +91,13 @@ class AddNewFragment : Fragment() {
                 e.printStackTrace()
             }
         }
-    }
 
+    } // end of onViewCreated
+
+    // adapter for new Todo_s property setting UI
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)
         : RecyclerView.Adapter<PropertyListAdapter.Holder>()
     {
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyListAdapter.Holder {
             val binding = ListSetTodoPropertiesBinding.inflate(LayoutInflater.from(parent.context))
             return Holder(binding, parentActivity as MainActivity, currentFragment)
@@ -100,7 +105,7 @@ class AddNewFragment : Fragment() {
         override fun onBindViewHolder(holder: PropertyListAdapter.Holder, position: Int) {
             holder.bind()
         }
-        override fun getItemCount(): Int = 1
+        override fun getItemCount(): Int = 1    // always 1.
 
         class Holder(private val binding: ListSetTodoPropertiesBinding,
                      val parentActivity: MainActivity, val currentFragment: AddNewFragment)

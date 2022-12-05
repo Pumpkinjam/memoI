@@ -28,7 +28,7 @@ class TodoListFragment : Fragment() {
     // getting attached activity.
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        parentActivity = context as Activity
+        parentActivity = activity as MainActivity
     }
 
     override fun onCreateView(

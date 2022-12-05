@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var navcon: NavController
 
+    // which fragment (in frgNav) is being shown to user?
+    // has type of FragmentType (enum)
     var currentFragment = FragmentType.MainToday
 
 
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnAddNew.setOnClickListener { view ->
             val navHostFragment = binding.frgNav.getFragment<NavHostFragment>()
 
+            // check the current fragment, and then choose action
             if (currentFragment == FragmentType.MainToday)
                 navcon.navigate(R.id.action_mainTodayFragment_to_addNewFragment)
             else
@@ -120,13 +123,13 @@ class MainActivity : AppCompatActivity() {
         navcon = binding.frgNav.getFragment<NavHostFragment>().navController
     }
 
-    // hide bottomNavigation
+    // hide bottomNavigation & addNewButton
     fun hideButtons() {
         binding.bottomNav.visibility = View.INVISIBLE
         binding.btnAddNew.visibility = View.INVISIBLE
     }
 
-    // show bottomNavigation
+    // show bottomNavigation &...
     fun showButtons() {
         binding.bottomNav.visibility = View.VISIBLE
         binding.btnAddNew.visibility = View.VISIBLE
@@ -156,7 +159,6 @@ class MainActivity : AppCompatActivity() {
         timer.schedule(timerTask, 0, 60000)// 반복 실행 함수
     }
 
-    // todo: make it be able to be used generally
     fun notificate(todo: Todo) {
 
         val builder = NotificationCompat.Builder(this, "test_channel")
@@ -187,8 +189,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    //companion object {
-
-    //}
 }
