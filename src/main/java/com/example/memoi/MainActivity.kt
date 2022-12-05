@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setupWithNavController(navcon)
 
         jumpToFragment(MainTodayFragment())
+        //핸들러를 통한 10초 딜레이 후 실행,viewmodel이 firebase로부터 객체를 로딩완료후 실행가능.
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             checkAlarm()
         }, 10000)
@@ -101,24 +102,22 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.visibility = View.VISIBLE
     }
      fun checkAlarm(){
+         //timer를 통한 60초마다 반복 실행.
         val timer = Timer()
         var todolist = vm.getTodayList()
         val timerTask: TimerTask = object : TimerTask() {
+            //반복 실행될 내용
             override fun run() {
                 if(todolist.size!=0){
                     for(i:Int in 0..todolist.size-1){
-                        if(todolist[i].localTime.equals(LocalTime.now())){
-                            var todo2=todolist[i]
-                            notificate(todo2)
+                        if(todolist[i].localTime.hour*60+todolist[i].localTime.minute ==LocalTime.now().hour*60+LocalTime.now().minute){
+                            notificate(todolist[i])
                         }
-                        //this is test code
-                        //var todo2=todolist[i]
-                        //notificate(todo2)
                     }
                 }
             }
         }
-        timer.schedule(timerTask, 0, 60000)
+        timer.schedule(timerTask, 0, 60000)// 반복 실행 함수
     }
 
     // todo: make it be able to be used generally
