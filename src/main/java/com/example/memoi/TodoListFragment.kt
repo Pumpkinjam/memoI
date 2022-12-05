@@ -48,22 +48,22 @@ class TodoListFragment : Fragment() {
         super.onResume()
 
         thread(start=true) {
-            if (!vm.isReady) {
-                while (!vm.isReady);
-                //setRecyclerView()
 
-                todoList = vm.getTodayList()
+            while (!vm.isReady);
+            //setRecyclerView()
 
-                activity?.runOnUiThread {
-                    binding?.recTodo?.layoutManager = LinearLayoutManager(parentActivity)
-                    binding?.recTodo?.adapter = TodoAdapter(todoList)
-                }
-                // debugging: for check
-                for (t in todoList) {
-                    println(t)
-                }
+            todoList = vm.getList()
+
+            activity?.runOnUiThread {
+                binding?.recTodo?.layoutManager = LinearLayoutManager(parentActivity)
+                binding?.recTodo?.adapter = TodoAdapter(todoList)
+            }
+            // debugging: for check
+            for (t in todoList) {
+                println(t)
             }
         }
+
     }
 
 }

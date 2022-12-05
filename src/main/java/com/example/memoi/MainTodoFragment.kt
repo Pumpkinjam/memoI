@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import com.example.memoi.databinding.FragmentMainTodoBinding
 import com.example.memoi.viewmodel.TodoListViewModel
 
@@ -24,8 +25,7 @@ class MainTodoFragment : Fragment() {
         binding = FragmentMainTodoBinding.inflate(inflater, container, false);
 
         binding?.btnAddNew?.setOnClickListener {
-            // todo : save all lists
-            (activity as MainActivity).goToFragment(AddNewFragment())
+            Navigation.createNavigateOnClickListener(R.id.action_mainTodoFragment_to_addNewFragment)
         }
 
         (activity as MainActivity).showTray()

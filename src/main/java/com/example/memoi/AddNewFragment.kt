@@ -9,10 +9,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.memoi.databinding.AddNewFragmentBinding
@@ -22,6 +24,7 @@ import com.example.memoi.todo.TodoBuilder
 import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
+import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 
@@ -57,18 +60,19 @@ class AddNewFragment : Fragment() {
 
         (activity as MainActivity).hideTray()
 
-        binding.btnBack.setOnClickListener {
-            //vm.setDoSave(false)
-            parentActivity.exitFragment()
-        }
+        binding.btnBack.setOnClickListener (
+            this.toTodo()
+        )
 
 
         binding.btnConfirm.setOnClickListener {
             println("Confirm button clicked")
             //vm.setDoSave(true)
             try {
-                vm.add(tempTodo.build())
-                parentActivity.exitFragment()
+                val newTodo = tempTodo.build()
+                vm.add(newTodo)
+
+                if (newTodo.localDate.equals(LocalDate.now())) this.toToday() else this.toTodo()
             }
             catch (e: Task.NullIntegrityException) {
                 Snackbar
@@ -80,6 +84,14 @@ class AddNewFragment : Fragment() {
                 e.printStackTrace()
             }
         }
+    }
+
+    fun toToday(): OnClickListener {
+        return Navigation.createNavigateOnClickListener(R.id.action_addNewFragment_to_mainTodayFragment)
+    }
+
+    fun toTodo(): OnClickListener {
+        return Navigation.createNavigateOnClickListener(R.id.action_addNewFragment_to_mainTodoFragment)
     }
 
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)
