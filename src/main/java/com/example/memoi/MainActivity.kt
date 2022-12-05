@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        resetNavcon()
+        navcon = binding.frgNav.getFragment<NavHostFragment>().navController
         binding.bottomNav.setupWithNavController(navcon)
 
         //핸들러를 통한 10초 딜레이 후 실행,viewmodel이 firebase로부터 객체를 로딩완료후 실행가능.
@@ -102,8 +102,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        resetNavcon()
-
         return navcon.navigateUp() || super.onSupportNavigateUp()
     }
 
@@ -131,10 +129,6 @@ class MainActivity : AppCompatActivity() {
 
     fun exitFragment() = jumpToFragment(fragStack.pop())
 */
-
-    fun resetNavcon() {
-        navcon = binding.frgNav.getFragment<NavHostFragment>().navController
-    }
 
     // hide bottomNavigation & addNewButton
     fun hideButtons() {

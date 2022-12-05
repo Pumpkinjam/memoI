@@ -64,15 +64,7 @@ class AddNewFragment : Fragment() {
         // don't show the bottomNav & addNewButton
         (activity as MainActivity).hideButtons()
 
-        binding.btnBack.setOnClickListener {
-            val navHostFragment = parentActivity.binding.frgNav.getFragment<NavHostFragment>()
-
-            // choose where to go back to.
-            if (fragFrom == MainActivity.FragmentType.MainToday)
-                parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodayFragment)
-            else
-                parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodoFragment)
-        }
+        binding.btnBack.setOnClickListener { exit() }
 
         binding.btnConfirm.setOnClickListener {
             println("Confirm button clicked")
@@ -90,9 +82,21 @@ class AddNewFragment : Fragment() {
                 System.err.println("Something's wrong... in AddNewFragment.onViewCreated")
                 e.printStackTrace()
             }
+
+            exit()
         }
 
     } // end of onViewCreated
+
+    fun exit() {
+        val navHostFragment = parentActivity.binding.frgNav.getFragment<NavHostFragment>()
+
+        // choose where to go back to.
+        if (fragFrom == MainActivity.FragmentType.MainToday)
+            parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodayFragment)
+        else
+            parentActivity.navcon.navigate(R.id.action_addNewFragment_to_mainTodoFragment)
+    }
 
     // adapter for new Todo_s property setting UI
     private class PropertyListAdapter(val parentActivity: Activity, val currentFragment: AddNewFragment)

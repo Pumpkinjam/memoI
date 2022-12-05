@@ -31,7 +31,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/frg_today_list"
-            android:name="com.example.memoi.TodayListFragment"
+            android:name="com.example.memoi.list.TodayListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

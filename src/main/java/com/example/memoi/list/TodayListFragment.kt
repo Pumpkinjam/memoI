@@ -1,33 +1,22 @@
-package com.example.memoi
+package com.example.memoi.list
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.memoi.databinding.FragmentTodayListBinding
 import com.example.memoi.todo.Todo
-import com.example.memoi.viewmodel.TodoListViewModel
 import java.util.ArrayList
 import kotlin.concurrent.thread
 
-class TodayListFragment : Fragment() {
+class TodayListFragment : ListFragment() {
 
-    val vm: TodoListViewModel by activityViewModels()
+    //val vm: TodoListViewModel by activityViewModels()
     lateinit var todayList: ArrayList<Todo>
 
     var binding: FragmentTodayListBinding? = null
-    lateinit var parentActivity: Activity
-
-    // getting attached activity.
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        parentActivity = activity as MainActivity
-    }
+    //lateinit var parentActivity: Activity
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +33,12 @@ class TodayListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        refresh()
+    }
 
-        thread(start=true) {
-
+    override fun refresh() {
+        thread(start = true) {
             while (!vm.isReady);
-            //setRecyclerView()
 
             todayList = vm.getTodayList()
 
@@ -56,13 +46,8 @@ class TodayListFragment : Fragment() {
                 binding?.recToday?.layoutManager = LinearLayoutManager(parentActivity)
                 binding?.recToday?.adapter = TodoAdapter(todayList)
             }
-            // debugging: for check
-            for (t in todayList) {
-                println(t)
-            }
+
         }
-
     }
-
 
 }

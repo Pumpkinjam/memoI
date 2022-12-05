@@ -31,7 +31,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/frg_todo_list"
-            android:name="com.example.memoi.TodoListFragment"
+            android:name="com.example.memoi.list.TodoListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

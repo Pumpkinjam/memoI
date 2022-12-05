@@ -3,10 +3,8 @@ package com.example.memoi.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.memoi.repository.TodoRepository
 import com.example.memoi.todo.*
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.ArrayList
 
@@ -20,10 +18,6 @@ class TodoListViewModel: ViewModel() {
     var isReady = false
 
     init {
-        update()
-    }
-
-    fun update() {
         _todoList.value = repository.selectTodo(this)
     }
 
