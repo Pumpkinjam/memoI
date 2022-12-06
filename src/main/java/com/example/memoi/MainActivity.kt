@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.memoi.databinding.ActivityMainBinding
 import com.example.memoi.todo.Todo
 import com.example.memoi.viewmodel.TodoListViewModel
+import java.time.LocalDate
 
 
 import java.time.LocalTime
@@ -62,12 +63,25 @@ class MainActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 
             //실행시점 기준 미래에 설정된 모든 알람 설정, 아직 기능 온전하지 않음.
-            /*val todolist = vm.getList()
+            val todolist = vm.getList()
+            val todoTodaylist = vm.getTodayList()
             for(i in 0 .. todolist.size-1){
-                if(todolist[i].localTime!=null){
-                //.truncatedTo(ChronoUnit.MINUTES)를 통한 분 이후의 값 제거
-                    if(todolist[i].localTime.isAfter(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
+                if(todolist[i].localDate!=null){
+                    if(todolist[i].localDate.isAfter(LocalDate.now())){
                         setAlarm(todolist[i])
+                    }else if(todolist[i].localDate.isEqual(LocalDate.now())){
+                        //.truncatedTo(ChronoUnit.MINUTES)를 통한 분 이후의 값 제거
+                        if(todolist[i].localTime.isAfter(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
+                            setAlarm(todolist[i])
+                        }
+                    }
+                }
+            }
+           /* for(i in 0 .. todoTodaylist.size-1){
+                if(todoTodaylist[i].localTime!=null){
+                    //.truncatedTo(ChronoUnit.MINUTES)를 통한 분 이후의 값 제거
+                    if(todoTodaylist[i].localTime.isAfter(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
+                        setAlarm(todoTodaylist[i])
                     }
                 }
             }*/
@@ -75,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             //알람삭제.. 구현실패
             //cancelAlarm(checkAlarm())
             //checkAlarm은 앱 실행시점기준 가장 근미래의 todo를 가져옴
-            setAlarm(checkAlarm()) //임시코드, 가까운 todo 재실행시 잡아줌.
+            //setAlarm(checkAlarm()) //임시코드, 가까운 todo 재실행시 잡아줌.
         }, 10000)
 
     }
@@ -115,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.visibility = View.VISIBLE
     }
     //알람 울릴떄마다 삭제하고 알람 생성할떄 호출해서 써먹으려하였지만 삭재가 안되여 사용 안할 예정.
-    fun checkAlarm():Todo?{
+    /*fun checkAlarm():Todo?{
         val todolist = vm.getTodayList()
         var num=1000
         if(todolist.size!=0){
@@ -139,7 +153,7 @@ class MainActivity : AppCompatActivity() {
             return todolist[num]
         }
         return null
-    }
+    }*/
     //알람 설정
     fun setAlarm(todoNear: Todo?){
         if(todoNear!=null) {
@@ -153,12 +167,12 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("url",todoNear.url)
 
             //알람시간이 현재 기준으로 얼마만큼 뒤에 있는지 계산
-            val time = (todoNear.localTime.hour*60+todoNear.localTime.minute
-                    -LocalTime.now().hour*60-LocalTime.now().minute)
+            val time = (todoNear.localDate.year*365*24*60+todoNear.localDate.dayOfYear*24*60+todoNear.localTime.hour*60+todoNear.localTime.minute
+                    -LocalDate.now().year*365*24*60-LocalDate.now().dayOfYear*24*60-LocalTime.now().hour*60-LocalTime.now().minute)
 
             //바로 실행하지 않기에 pending, 삭재에 실패하였기에 고려하지 않고 랜덤 사용
             val pendingIntent = PendingIntent.getBroadcast(
-                this, Random().nextInt(999999999), intent, PendingIntent.FLAG_IMMUTABLE
+                this, Random().nextInt(Int.MAX_VALUE-1), intent, PendingIntent.FLAG_IMMUTABLE
             )
 
             getSystemService(AlarmManager::class.java).setExact(
