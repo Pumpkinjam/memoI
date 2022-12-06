@@ -85,15 +85,23 @@ class MainActivity : AppCompatActivity() {
 
             //실행시점 기준 미래에 설정된 모든 알람 설정, 아직 기능 온전하지 않음.
             val todolist = vm.getList()
-            val todoTodaylist = vm.getTodayList()
-            for(i in 0 .. todolist.size-1){
-                if(todolist[i].localDate!=null){
-                    if(todolist[i].localDate.isAfter(LocalDate.now())){
-                        setAlarm(todolist[i])
-                    }else if(todolist[i].localDate.isEqual(LocalDate.now())){
+
+            for(i in 0 until todolist.size-1){
+                val target = todolist[i]
+                if(target.localTime != null){
+
+                    if (target.localDate == null) {
+                        val newTarget = target.deepCopy()
+                        newTarget.setNewDate(LocalDate.now())
+                        setAlarm(newTarget)
+                    }
+                    else if(target.localDate.isAfter(LocalDate.now())){
+                        setAlarm(target)
+                    }
+                    else if(target.localDate.isEqual(LocalDate.now())){
                         //.truncatedTo(ChronoUnit.MINUTES)를 통한 분 이후의 값 제거
-                        if(todolist[i].localTime.isAfter(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
-                            setAlarm(todolist[i])
+                        if(target.localTime.isAfter(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))){
+                            setAlarm(target)
                         }
                     }
                 }

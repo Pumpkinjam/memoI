@@ -16,11 +16,9 @@ class AlarmReceiver():BroadcastReceiver() {
                 PendingIntent.FLAG_IMMUTABLE)
             //입력값들 가져오기
             val title= intent?.getStringExtra("title")
-            val description = intent?.getStringExtra("description")
-            var url = intent?.getStringExtra("url")
-            if(url==null){
-                url = ""
-            }
+            val description = intent?.getStringExtra("description") ?: ""
+            var url = intent?.getStringExtra("url") ?: ""
+            
             val notification = NotificationCompat.Builder(context, App.ALERT_CHANNL_ID)
                 .setSmallIcon(R.drawable.clock)
                 .setContentTitle("$title")

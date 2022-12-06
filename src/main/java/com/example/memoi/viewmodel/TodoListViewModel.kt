@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.memoi.repository.TodoRepository
 import com.example.memoi.todo.*
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.ArrayList
 
 class TodoListViewModel: ViewModel() {
@@ -32,9 +33,16 @@ class TodoListViewModel: ViewModel() {
         _todoList.value?.run {
 
             for (todo in this) {
+                println(todo)
                 // don't get non-today
-                if (todo.date!=null && (LocalDate.parse(todo.date)).isEqual(LocalDate.now()))
+                // 1st case : no date, just time (everyday notification)
+                // 2nd case : date today
+                if (todo.date == null && todo.time != null && todo.localTime.isAfter(LocalTime.now())
+                    || todo.date != null && (LocalDate.parse(todo.date)).isEqual(LocalDate.now())
+                ) {
                     resList.add(todo)
+                    println("a")
+                }
             }
         }
 

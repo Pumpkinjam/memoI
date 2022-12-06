@@ -93,6 +93,10 @@ public class Todo extends Task {
 
     public String getUrl() { return this.url; }
 
+    public Todo deepCopy() {
+        return new Todo(title, description, date, time ,url);
+    }
+
     // toString() Override
     @Override
     public String toString() {
@@ -101,7 +105,7 @@ public class Todo extends Task {
                 "\nDescription: " + description +
                 "\nDate: " + date +
                 "\nTime: " + time +
-                "\nUrl" + url +
+                "\nUrl: " + url +
                 "\n";
     }
 }
