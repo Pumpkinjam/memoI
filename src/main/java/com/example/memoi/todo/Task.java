@@ -26,8 +26,7 @@ public abstract class Task {
     }
 
     Task(String title, String description, String date, String time) {
-        // firebase database paths must not contain '.'
-        this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
+        this.created = LocalDateTime.now().toString();
 
         // parsable String checking
         if (date != null) LocalDate.parse(date);
@@ -44,8 +43,7 @@ public abstract class Task {
     Task(String title, String description, LocalDate date, LocalTime time) {
         if (title == null) throw new Task.NullIntegrityException();
 
-        // firebase database paths must not contain '.'
-        this.created = LocalDateTime.now().toString().substring(2).replace('.', '_');
+        this.created = LocalDateTime.now().toString();
         this.title = title;
         this.description = description;
         this.date = date == null ? null : date.toString();

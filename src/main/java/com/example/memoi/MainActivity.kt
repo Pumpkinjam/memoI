@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             //실행시점 기준 미래에 설정된 모든 알람 설정, 아직 기능 온전하지 않음.
             val todolist = vm.getList()
 
-            for(i in 0 until todolist.size-1){
+            for (i in 0 until todolist.size-1) {
                 val target = todolist[i]
                 if(target.localTime != null){
 
@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity() {
                             setAlarm(target)
                         }
                     }
+
                 }
             }
            /* for(i in 0 .. todoTodaylist.size-1){
@@ -127,30 +128,6 @@ class MainActivity : AppCompatActivity() {
         return navcon.navigateUp() || super.onSupportNavigateUp()
     }
 
-/*
-
-    override fun onBackPressed() {
-        if (fragStack.empty()) {super.onBackPressed()}
-        else { exitFragment() }
-    }
-
-
-    // without pushing to stack
-    fun jumpToFragment(frg: Fragment) {
-        supportFragmentManager.beginTransaction().run {
-            replace(binding.frgNav.id, frg)
-            commit()
-        }
-        println("jumping to $frg")
-    }
-
-    fun goToFragment(frg: Fragment) {
-        fragStack.push(binding.frgNav.getFragment())
-        jumpToFragment(frg)
-    }
-
-    fun exitFragment() = jumpToFragment(fragStack.pop())
-*/
 
     // hide bottomNavigation & addNewButton
     fun hideButtons() {
@@ -194,35 +171,35 @@ class MainActivity : AppCompatActivity() {
     }*/
     
     //알람 설정
-    fun setAlarm(todoNear: Todo?){
-        if(todoNear!=null) {
-            //System.out.println(todoNear.localTime)
-            //System.out.println(todoNear.title)
+    fun setAlarm(todoNear: Todo) {
+        println("setting alarm for : \n$todoNear")
+        println("\n>>>\nunique Id : ${todoNear.uniqueId}\n==========\n")
 
-            //intent를 통한 todo값 보내주기
-            val intent = Intent(this, AlarmReceiver::class.java)
-            intent.putExtra("title", todoNear.title)
-            intent.putExtra("description",todoNear.description)
-            intent.putExtra("url",todoNear.url)
+        //intent를 통한 todo값 보내주기
+        val intent = Intent(this, AlarmReceiver::class.java)
+        intent.putExtra("title", todoNear.title)
+        intent.putExtra("description",todoNear.description)
+        intent.putExtra("url",todoNear.url)
+        intent.putExtra("num", todoNear.uniqueId)
 
-            //알람시간이 현재 기준으로 얼마만큼 뒤에 있는지 계산
-            val time = (todoNear.localDate.year*365*24*60+todoNear.localDate.dayOfYear*24*60+todoNear.localTime.hour*60+todoNear.localTime.minute
-                    -LocalDate.now().year*365*24*60-LocalDate.now().dayOfYear*24*60-LocalTime.now().hour*60-LocalTime.now().minute)
+        //알람시간이 현재 기준으로 얼마만큼 뒤에 있는지 계산
+        val time = (todoNear.localDate.year*365*24*60+todoNear.localDate.dayOfYear*24*60+todoNear.localTime.hour*60+todoNear.localTime.minute
+                -LocalDate.now().year*365*24*60-LocalDate.now().dayOfYear*24*60-LocalTime.now().hour*60-LocalTime.now().minute)
 
-            //바로 실행하지 않기에 pending, 삭재에 실패하였기에 고려하지 않고 랜덤 사용
-            val pendingIntent = PendingIntent.getBroadcast(
-                this, Random().nextInt(Int.MAX_VALUE-1), intent, PendingIntent.FLAG_IMMUTABLE
-            )
+        //바로 실행하지 않기에 pending
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, todoNear.uniqueId, intent, PendingIntent.FLAG_IMMUTABLE
+        )
 
-            getSystemService(AlarmManager::class.java).setExact(
-                //기기시간 기준으로 실행
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                (SystemClock.elapsedRealtime() + time*60*1000),
-                pendingIntent
-            )
+        getSystemService(AlarmManager::class.java).setExact(
+            //기기시간 기준으로 실행
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            ( (SystemClock.elapsedRealtime()/60000 + time ) * 60000 ),
+            pendingIntent
+        )
 
-            //cancelAlarm(todoNear)
-        }
+        //cancelAlarm(todoNear)
+
     }
     /*알람 삭제함수.. 실패
     fun cancelAlarm(todoNear: Todo?) {

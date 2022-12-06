@@ -111,7 +111,7 @@ class TodoBuilder {
             throw NullIntegrityException()
         }
         val tmp = Todo(title, description, date, time, url)
-        tmp.setCreated(created.replace('.', '_'))
+        tmp.setCreated(created)
 
         return tmp
     }

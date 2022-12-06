@@ -41,7 +41,6 @@ class TodoListViewModel: ViewModel() {
                     || todo.date != null && (LocalDate.parse(todo.date)).isEqual(LocalDate.now())
                 ) {
                     resList.add(todo)
-                    println("a")
                 }
             }
         }

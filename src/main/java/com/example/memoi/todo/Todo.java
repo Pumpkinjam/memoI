@@ -43,9 +43,8 @@ public class Todo extends Task {
 
       // for loading from firestore.
     public void setCreated(String c) {
-        String tmp = c.replace('_', '.');
-        LocalDateTime.parse(tmp);
-        this.created = tmp;
+        LocalDateTime.parse(c);
+        this.created = c;
     }
 
     public void setTitle(String t) { this.title = t; }
@@ -92,6 +91,17 @@ public class Todo extends Task {
     }
 
     public String getUrl() { return this.url; }
+
+    // get unique Id (Integer) of todo
+    // based on created field
+    public int getUniqueId() {
+        LocalDateTime tmp = LocalDateTime.parse(created);
+
+        String resStr = "" +
+                (tmp.getDayOfYear() * (tmp.getYear() - 2000)) +
+                (tmp.getHour() * 24 * 60 + tmp.getMinute() * 60 + tmp.getSecond());
+        return Integer.parseInt(resStr);
+    }
 
     public Todo deepCopy() {
         return new Todo(title, description, date, time ,url);
