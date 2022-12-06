@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             //실행시점 기준 미래에 설정된 모든 알람 설정, 아직 기능 온전하지 않음.
             val todolist = vm.getList()
 
-            for (i in 0 until todolist.size-1) {
+            for (i in 0 until todolist.size) {
                 val target = todolist[i]
                 if(target.localTime != null){
 
