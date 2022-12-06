@@ -19,12 +19,14 @@ class AlarmReceiver():BroadcastReceiver() {
             //입력값들 가져오기
             val title= intent?.getStringExtra("title")
             val description = intent?.getStringExtra("description")
-            val url = intent?.getStringExtra("url")
+            var url = intent?.getStringExtra("url")
+            if(url==null){
+                url = ""
+            }
             val notification = NotificationCompat.Builder(context, App.ALERT_CHANNL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.clock)
                 .setContentTitle("$title")
                 .setContentText("$description\n$url")
-                //.setDefaults(Notification.DEFAULT_VIBRATE)// 알림 진동기능
                 .setContentIntent(pendingIntent)
                 .build()
             context.getSystemService(NotificationManager::class.java)
