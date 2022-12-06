@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity() {
         getSystemService(AlarmManager::class.java).setExact(
             //기기시간 기준으로 실행
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            ( (SystemClock.elapsedRealtime()/60000 + time ) * 60000 ),
+            ( SystemClock.elapsedRealtime() + time * 60*1000 ),
             pendingIntent
         )
 
