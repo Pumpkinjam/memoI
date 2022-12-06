@@ -1,13 +1,11 @@
 package com.example.memoi
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.example.memoi.todo.Todo
 
 const val ALARM_NOTIFICATION_ID =0
 class AlarmReceiver():BroadcastReceiver() {
