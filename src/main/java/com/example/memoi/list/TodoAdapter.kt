@@ -1,7 +1,6 @@
-package com.example.memoi
+package com.example.memoi.list
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +10,19 @@ import com.example.memoi.R
 import com.example.memoi.databinding.ListTodoBinding
 import com.example.memoi.todo.Todo
 import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
+import androidx.fragment.app.Fragment
 import com.example.memoi.repository.TodoRepository
 import com.example.memoi.viewmodel.TodoListViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdapter.Holder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoAdapter.Holder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ListTodoBinding.inflate(LayoutInflater.from(parent.context))
         return Holder(binding)
     }
 
-    override fun onBindViewHolder(holder: TodoAdapter.Holder, position: Int) {
+    override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(todoList.get(position))
     }
 
@@ -57,27 +56,30 @@ class TodoAdapter(val todoList: ArrayList<Todo>) : RecyclerView.Adapter<TodoAdap
                     }
                 }
 
+                /*
                 // 할일 클릭 시, 삭제
                 root.setOnClickListener {
 
                     val tmp = AlertDialog.Builder(binding.root.context)
+                    val vm = TodoListViewModel()
                     tmp.setTitle("할일 삭제하기")
                         .setMessage("${todo.title}을(를) 삭제하시겠습니까?")
-                        .setPositiveButton("예",
-                            DialogInterface.OnClickListener { _, _ ->
-                                TodoRepository().deleteTodo(todo)
-                                Snackbar.make(binding.root, "삭제되었습니다.", Snackbar.LENGTH_SHORT)
-                                    .show()
-                        })
-                        .setNegativeButton("아니오",
-                            DialogInterface.OnClickListener { _, _ ->
-                                Snackbar.make(binding.root, "당신의 '${todo.title}'은 살아남았습니다.", Snackbar.LENGTH_SHORT)
-                                    .show()
-                            }
-                        )
+                        .setPositiveButton("예") { _, _ ->
+                            TodoRepository().deleteTodo(todo)
+                            vm.update()
+                            Snackbar.make(binding.root,
+                                "삭제되었습니다.", Snackbar.LENGTH_SHORT)
+                                .show()
+                        }
+                        .setNegativeButton("아니오") { _, _ ->
+                            Snackbar.make(binding.root,
+                                "당신의 '${todo.title}'은 살아남았습니다.", Snackbar.LENGTH_SHORT)
+                                .show()
+                        }
                         .show()
-                    
-                }
+
+                    frg.refresh()
+                }*/
             }
         }
     }

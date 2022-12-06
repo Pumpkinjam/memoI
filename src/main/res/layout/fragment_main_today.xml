@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainTodayFragment">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_add_new"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="90dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -30,7 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/memoI"
-            android:textSize="20sp" />
+            android:textColor="#000000"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
@@ -39,7 +31,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/frg_today_list"
-            android:name="com.example.memoi.TodayListFragment"
+            android:name="com.example.memoi.list.TodayListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

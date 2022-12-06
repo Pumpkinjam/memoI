@@ -65,6 +65,7 @@ class TodoRepository {
     }
 
     fun insertTodo(newTodo: Todo) {
+        println("\n\n\n${newTodo.created}\n\n\n\n")
         val obj = with(newTodo) {
             hashMapOf(
                 "created" to created,
@@ -87,7 +88,7 @@ class TodoRepository {
     }
 
     fun deleteTodo(todo: Todo) {
-        dbColl.document(todo.created)
+        dbColl.document(todo.created.replace('.', '_'))
             .delete()
             .addOnSuccessListener { _ ->
                 println("/////////////\ndelete succeed\n/////////////")
