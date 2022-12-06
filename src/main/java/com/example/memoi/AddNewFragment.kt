@@ -152,29 +152,40 @@ class AddNewFragment : Fragment() {
                         override fun afterTextChanged(s: Editable?) { }
                     })
 
+                    //날짜 받기
                     btnSetDate.setOnClickListener {
+                        //사용자가 날짜를 선택하고 Ok버튼을 눌렀을 때 text가 바뀌는 코드
+                        //kotlin에서 달은 0~11월로 설정되어 있으므로 1을 더해주어야함
                         val datePickerDialog =
                             DatePickerDialog.OnDateSetListener { datepicker, year, month, day ->
                                 btnSetDate.text = "$year/${(month + 1)}/$day"
                                 currentFragment.tempTodo.setDate(year, month+1, day)
                             }
+                        //date 변수에 DatePickerlog를 통해 받은 년월일을 저장
+                        //DatePickerDialog는 생성자로 Listener, context, 연도, 달, 일 을 받음
                         var date = DatePickerDialog(parentActivity, datePickerDialog,
                             year, month, day)
+                        //현재 날짜 이전으로 설정이 안되게끔 설정
                         date.datePicker.minDate = System.currentTimeMillis()
                         date.show()
                     }
 
+                    //시간 받기
                     btnSetTime.setOnClickListener {
+                        //사용자가 시간을 선택하고 Ok버튼을 눌렀을 때 text가 바뀌는 코드
                         val timePickerDialog =
                             TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                                 btnSetTime.text = "${hour}시 ${minute}분"
                                 currentFragment.tempTodo.setTime(hour, minute)
                             }
+                        //date 변수에 TimePickerlog를 통해 받은 시간과 분을 저장
+                        //DatePickerDialog는 생성자로 Listener, context, 시간, 분 을 받음
                         var time = TimePickerDialog(parentActivity, timePickerDialog,
-                            hour, minute, false)
+                            hour, minute, true)
                         time.show()
                     }
 
+                    //URL 받기
                     inputUrl.addTextChangedListener(object: TextWatcher {
                         override fun beforeTextChanged(
                             s: CharSequence?, start: Int, count: Int, after: Int) { }
